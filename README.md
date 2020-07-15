@@ -41,7 +41,7 @@ The procedure will then be the following
 Whether a pin is in tri-state or an input produces the same result with this method, but we know that only pin 12 and 19 can be a tri-state and in high-Z mode, and those pins will always be of **output** type.
 Every other pin we find to vary depending on out output, can be safely marked as **input**.
 
-This must be done for every unknown pin (and to test whether the outputs in 12 or 19 are hi-Z).
+This must be done for every unknown pin (and to test whether the outputs in 12 or 19 are hi-Z). And for pins 13 to 18 this must be done prior starting the bruteforcing.
 
 ##### Why this works?
 The resistor will avoid the output pin from the MCU to cause a short circuit with pin in the PAL, and the resistor will make the drive to the pin weak enough not to be able to influence an output, but still strong enough to change the state the input pin sees in case the PAL pin is either in hi-Z or an input.
