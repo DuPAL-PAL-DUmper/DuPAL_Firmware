@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "pgmspace.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
+}
