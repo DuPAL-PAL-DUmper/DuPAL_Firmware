@@ -125,3 +125,10 @@ int uart_getchar(FILE *stream) {
 
     return UART_UDR;
 }
+
+void uart_puts(char *c) {
+    while(*c) {
+        uart_putchar(*c, NULL);
+        c++;
+    }
+}

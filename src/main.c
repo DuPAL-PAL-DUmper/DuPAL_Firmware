@@ -11,8 +11,10 @@
 #include "ioconfig.h"
 
 #include "uart.h"
+#include "strutils.h"
 
 #include "main.h"
+
 
 #define VERSION "0.0.1"
 

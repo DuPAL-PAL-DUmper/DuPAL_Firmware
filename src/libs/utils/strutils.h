@@ -1,0 +1,4 @@
+#ifndef _STRUTILS_HEADER_
+#define _STRUTILS_HEADER_
+
+#endif /* _STRUTILS_HEADER_ */
