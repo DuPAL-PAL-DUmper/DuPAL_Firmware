@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <util/delay.h>
 
@@ -15,8 +16,8 @@
 
 #include "main.h"
 
-
 #define VERSION "0.0.1"
+#define SOFT_HEADER "DuPAL - " VERSION "\n\n"
 
 static void rts_init(void);
 
@@ -46,6 +47,8 @@ int main(void) {
     sei();
 
     setLED(1); // Turn the LED on
+
+    uart_puts(SOFT_HEADER); // Print the header
 
     while(1) {
         wdt_reset(); // Kick the watchdog
