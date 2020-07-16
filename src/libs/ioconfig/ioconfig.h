@@ -1,8 +1,34 @@
 #ifndef _IOCONFIG_H_
 #define _IOCONFIG_H_
 
-// I/O port definitions
+/*  
+ *  Connections map
+ *
+ *  PB0 -> '595 SER    (OUT)
+ *  PB1 -> '595 CLK    (OUT)
+ *  PB2 -> '595 /RESET (OUT)  
+ *  PC0 -> '595 RCLK   (OUT)
+ *  PC1 -> '595 /OE    (OUT)
+ * 
+ *  PC2 -> PAL IO1 direct (IN)
+ *  PC3 -> PAL IO2 direct (IN)
+ *  PC4 -> PAL IO3 direct (IN)
+ *  PC5 -> PAL IO4 direct (IN)
+ *  PD2 -> PAL IO5 direct (IN)
+ *  PD3 -> PAL IO6 direct (IN)
+ * 
+ *  PD4 -> PAL TRIO1 direct (IN)
+ *  PD5 -> PAL TRIO2 direct (IN)
+ * 
+ *  PD6 -> PAL TRIO1 resistor (OUT)
+ *  PD7 -> PAL TRIO2 resistor (OUT)
+ * 
+ *  PB5 -> Activity LED (OUT)
+ * 
+ */
 
+
+// I/O port definitions
 #include <avr/io.h>
 
 #define LEDPORT	 PORTB
