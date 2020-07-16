@@ -46,6 +46,7 @@ This must be done for every unknown pin (and to test whether the outputs in 12 o
 
 ##### Why this works?
 The resistor will avoid a short-circuit in case the PAL pin is an output, and it will also make the MCU output drive weak enough to not be able to change the state of said PAL output, but still strong enough to change the state in case the pin is an input (or an output in hi-Z mode).
+In short, the resistor will make the outputs act a dynamic pull-ups/downs.
 
 #### How to bruteforce the content
 Once which pins are inputs or outputs is known, we can then proceed to try every input combination and record the output.
