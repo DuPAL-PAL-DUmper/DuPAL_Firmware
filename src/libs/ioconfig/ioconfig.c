@@ -12,6 +12,8 @@ void io_init() {
     // Set the other ports for PAL communication as IN or OUT
     DDRC &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // PC2-5 as inputs
     DDRD &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // PD2-5 as inputs
+    PORTC &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // Disable PC2-5 internal pull-ups
+    PORTD &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // Disable PD2-5 internal pull-ups
     DDRD |= (_BV(6) | _BV(7)); // PD6,7 as outputs
 }
 
