@@ -31,7 +31,7 @@ static void setLED(uint8_t status);
 static void blinkLED(uint8_t times, uint8_t fast); // Blink the led X times either fast (50ms) or slow (100ms)
 static void soft_reset(void);
 
-static void detect_inputs(void);
+static uint8_t detect_inputs(void);
 
 int main(void) {
 #if defined (__AVR_ATmega328P__)
