@@ -44,7 +44,7 @@ FORMAT = ihex
 TARGET = out/DuPAL
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = src/main.c src/libs/ioconfig/ioconfig.c src/libs/uart/uart.c src/libs/utils/strutils.c src/libs/shifter/shifter.c
+SRC = src/main.c src/libs/ioconfig/ioconfig.c src/libs/uart/uart.c src/libs/utils/strutils.c src/libs/utils/compound_io.c src/libs/shifter/shifter.c
 
 # List Assembler source files here.
 #     Make them always end in a capital .S.  Files ending in a lowercase .s
