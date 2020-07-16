@@ -15,3 +15,7 @@ void io_init() {
     DDRD |= (_BV(6) | _BV(7)); // PD6,7 as outputs
 }
 
+uint8_t io_read(void) {
+    return ((PINC & (_BV(2) | _BV(3) | _BV(4) | _BV(5))) >> 2) |
+            ((PIND & (_BV(2) | _BV(3) | _BV(4) | _BV(5))) << 3);
+}

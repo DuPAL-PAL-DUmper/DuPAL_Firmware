@@ -30,6 +30,7 @@
 
 // I/O port definitions
 #include <avr/io.h>
+#include <stdint.h>
 
 #define LEDPORT	 PORTB
 #define LEDPIN   PINB
@@ -50,5 +51,11 @@
 #define SHFT_2_OE   1 // PC1
 
 void io_init(void);
+
+/*
+ * This will return a byte that contains, from MSB to LSB
+ * TRIO1, TRIO2, IO6, IO5, IO4, IO3, IO2, IO1
+ */
+uint8_t io_read(void);
 
 #endif /* _IOCONFIG_H_ */
