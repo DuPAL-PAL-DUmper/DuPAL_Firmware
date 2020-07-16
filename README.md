@@ -47,5 +47,15 @@ This must be done for every unknown pin (and to test whether the outputs in 12 o
 The resistor will avoid the output pin from the MCU to cause a short circuit with pin in the PAL, and the resistor will make the drive to the pin weak enough not to be able to influence an output, but still strong enough to change the state the input pin sees in case the PAL pin is either in hi-Z or an input.
 
 #### How to bruteforce the content
-**TODO**
+Once which pins are inputs or outputs is known, we can then proceed to try every input combination and record the output.
+It's important to note that when testing an input combination, we can read the output pins between 13 and 18 (minus those that are found as inputs, of course) directly, but outputs on 12 and 19 require that we toggle the MCU output connected to them high/low and check that the output is not in hi-Z mode.
 
+##### Output format
+We can then output something in the following form for every combination
+
+```
+I1 I2 I3 I4 I5 I6 I7 I8 I9 I10 IO1 IO2 IO3 IO4 IO5 IO6 | O1 O2 IO1 IO2 IO3 IO4 IO5 IO6
+ 0  0  0  1  1  0  0  0  1   0   0   .   .   .   1   . |  x  1   .   1   1   0   .   0
+```
+
+On the left side we get all the **inputs**, if an IO pin is set as output, their value will be presented as `.`, on the right side we get the **outputs**. If an IO pin is set as input, the value here will be presented as `.`, if a tri-state output is in hi-z mode, their value will be presented as `x`.
