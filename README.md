@@ -5,7 +5,8 @@ PAL is an acronym which means *Programmable Array Logic*, that is, these ICs are
 Most of the PAL ICs in the devices floating around are read-protected: this means that you cannot ask the device to read its content, leaving only bruteforce as a way to recover the programming.
 
 ### The PAL16L8
-The **PAL16L8** is a relatively simple device. It has:
+The **PAL16L8** is a relatively simple device.
+It has:
 - 10 Input pins (1-9, 11)
 - 2 tri-state outputs (12, 19)
 - 6 selectable Input / Output (not tristate) pins (13-18)
@@ -44,7 +45,7 @@ Every other pin we find to vary depending on out output, can be safely marked as
 This must be done for every unknown pin (and to test whether the outputs in 12 or 19 are hi-Z). And for pins 13 to 18 this must be done prior starting the bruteforcing.
 
 ##### Why this works?
-The resistor will avoid the output pin from the MCU to cause a short circuit with pin in the PAL, and the resistor will make the drive to the pin weak enough not to be able to influence an output, but still strong enough to change the state the input pin sees in case the PAL pin is either in hi-Z or an input.
+The resistor will avoid a short-circuit in case the PAL pin is an output, and it will also make the MCU output drive weak enough to not be able to change the state of said PAL output, but still strong enough to change the state in case the pin is an input (or an output in hi-Z mode).
 
 #### How to bruteforce the content
 Once which pins are inputs or outputs is known, we can then proceed to try every input combination and record the output.
