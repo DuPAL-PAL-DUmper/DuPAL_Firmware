@@ -58,4 +58,10 @@ void io_init(void);
  */
 uint8_t io_read(void);
 
+/*
+ * Write the two TRIO outputs, from MSB to LSB
+ * TRIO2, TRIO1
+ */
+uint8_t trio_write(uint8_t val);
+
 #endif /* _IOCONFIG_H_ */
