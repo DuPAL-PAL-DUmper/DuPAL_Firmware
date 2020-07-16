@@ -73,6 +73,8 @@ int main(void) {
 
     format_ioconf(io_inputs);
 
+    uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1\n");
+    uart_puts("1 2 3 4 5 6 7 8 9 1 8 7 6 5 4 3 | 8 7 6 5 4 3 9 2\n");
     uart_puts("-------------------------------------------------\n");
 
     // At worst, if all the IOs are set as inputs, we'll have to try 65536 combinations!
@@ -132,11 +134,11 @@ static uint8_t detect_inputs(void) {
 
 static void format_ioconf(uint8_t inputs) {
     memset(str_buf, 0, STR_BUF_SIZE);
-    sprintf(str_buf, "The following input config was detected:\n");
+    sprintf(str_buf, "The following IO config was detected:\n");
     uart_puts(str_buf);
     
     memset(str_buf, 0, STR_BUF_SIZE);
-    sprintf(str_buf, "IO1: %c\nIO2: %c\nIO3: %c\nIO4: %c\nIO5: %c\nIO6: %c\n\n", 
+    sprintf(str_buf, "IO1 (18): %c\nIO2 (17): %c\nIO3 (16): %c\nIO4 (15): %c\nIO5 (14): %c\nIO6 (13): %c\n\n", 
     ((inputs >> 0) & 0x01) ? 'I' : 'O',
     ((inputs >> 1) & 0x01) ? 'I' : 'O',
     ((inputs >> 2) & 0x01) ? 'I' : 'O',
