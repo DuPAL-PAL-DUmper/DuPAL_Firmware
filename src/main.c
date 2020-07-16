@@ -12,6 +12,7 @@
 #include "ioconfig.h"
 
 #include "uart.h"
+#include "shifter.h"
 #include "strutils.h"
 
 #include "main.h"
@@ -45,6 +46,9 @@ int main(void) {
 
     // Enable interrupts
     sei();
+
+    // Prepare the shifter
+    shifter_init();
 
     setLED(1); // Turn the LED on
 

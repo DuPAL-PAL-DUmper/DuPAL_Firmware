@@ -15,7 +15,7 @@
 #define SHFT_DDR_1  DDRB
 #define SHFT_1_SER  0 // PB0
 #define SHFT_1_CLK  1 // PB1
-#define SHGT_1_RST  2 // PB2
+#define SHFT_1_RST  2 // PB2
 
 #define SHFT_PORT_2 PORTC
 #define SHFT_PIN_2  PINC
