@@ -59,4 +59,8 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10 IO1 IO2 IO3 IO4 IO5 IO6 | O1 O2 IO1 IO2 IO3 IO4 I
  0  0  0  1  1  0  0  0  1   0   0   .   .   .   1   . |  x  1   .   1   1   0   .   0
 ```
 
-On the left side we get all the **inputs**, if an IO pin is set as output, their value will be presented as `.`, on the right side we get the **outputs**. If an IO pin is set as input, the value here will be presented as `.`, if a tri-state output is in hi-z mode, their value will be presented as `x`.
+- On the left side we get all the **inputs**
+    - If an IO pin is set as output, their value will be presented as `.`
+- On the right side we get the **outputs**.
+    - If an IO pin is set as input, the value here will be presented as `.`
+    - If a tri-state output is in hi-z mode, their value will be presented as `x`
