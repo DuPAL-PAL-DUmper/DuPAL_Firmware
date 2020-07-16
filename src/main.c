@@ -62,7 +62,11 @@ int main(void) {
     uart_puts(SOFT_HEADER); // Print the header
 
     // Detect the inputs on the PAL
-    detect_inputs();
+    io_inputs = detect_inputs();
+
+    if(io_inputs == 0x3F) { // All IOs as input? maybe there is no chip inserted
+        uart_puts("WARNING: All the IOs are floating... Maybe no or broken chip inserted?\n\n");
+    }
 
     //sprintf(str_buf, "Ins %.2X \n", io_inputs);
     //uart_puts(str_buf);
@@ -92,7 +96,7 @@ static void blinkLED(uint8_t times, uint8_t fast) {
     }
 }
 
-static void detect_inputs(void) {
+static uint8_t detect_inputs(void) {
     uint8_t read1, read2;
     compound_io_write(0); // Zero everything
     _delay_us(50);
@@ -102,7 +106,7 @@ static void detect_inputs(void) {
     _delay_us(50);
     read2 = io_read();
 
-    io_inputs = (read1 ^ read2) & 0x3F;
+    return (read1 ^ read2) & 0x3F;
 }
 
 ISR(INT1_vect) { // Manage INT1
