@@ -72,6 +72,11 @@ int main(void) {
 
 
     format_ioconf(io_inputs);
+    wdt_reset();
+    _delay_ms(2000);
+    wdt_reset();
+    _delay_ms(2000);
+    wdt_reset();
 
     uart_puts("           INPUTS               |     OUTPUTS    \n");
     uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1\n");
