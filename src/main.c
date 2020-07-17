@@ -66,23 +66,25 @@ int main(void) {
 
     wdt_reset();
 
-    setLED(0);
-
-    uint8_t read_1, read_2, trio_floating;
-
-
     format_ioconf(io_inputs);
+    
+    // Reset the watchdog and blink a bit
+    setLED(1);
     wdt_reset();
+    setLED(0);
     _delay_ms(2000);
     wdt_reset();
+    setLED(1);
     _delay_ms(2000);
     wdt_reset();
+    setLED(0);
 
     uart_puts("           INPUTS               |     OUTPUTS    \n");
     uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1\n");
     uart_puts("1 2 3 4 5 6 7 8 9 1 8 7 6 5 4 3 | 8 7 6 5 4 3 9 2\n");
     uart_puts("-------------------------------------------------\n");
 
+    uint8_t read_1, read_2, trio_floating;
     // At worst, if all the IOs are set as inputs, we'll have to try 65536 combinations!
     for(uint32_t idx = 0; idx <= 0xFFFF; idx++) {
         if((idx > 0) && ((idx & ~((uint16_t)io_inputs << 10)) == ((idx - 1) & ~((uint16_t)io_inputs << 10)))) continue; // Skip this round
