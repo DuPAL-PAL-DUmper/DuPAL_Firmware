@@ -69,7 +69,7 @@ int main(void) {
     format_ioconf(io_inputs);
     
     // Reset the watchdog and blink a bit
-    for(uint8_t idx = 0; i < 5; i++) {
+    for(uint8_t i = 0; i < 5; i++) {
         setLED(1);
         _delay_ms(500);
         setLED(0);
