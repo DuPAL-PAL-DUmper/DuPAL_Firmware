@@ -69,14 +69,13 @@ int main(void) {
     format_ioconf(io_inputs);
     
     // Reset the watchdog and blink a bit
-    setLED(1);
-    wdt_reset();
-    _delay_ms(2000);
-    wdt_reset();
-    setLED(0);
-    _delay_ms(2000);
-    wdt_reset();
-    setLED(1);
+    for(uint8_t idx = 0; i < 5; i++) {
+        setLED(1);
+        _delay_ms(500);
+        setLED(0);
+        _delay_ms(500);
+        wdt_reset();
+    }
 
     uart_puts("           INPUTS               |     OUTPUTS    \n");
     uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1\n");
