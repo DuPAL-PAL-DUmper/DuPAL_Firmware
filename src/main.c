@@ -71,13 +71,12 @@ int main(void) {
     // Reset the watchdog and blink a bit
     setLED(1);
     wdt_reset();
+    _delay_ms(2000);
+    wdt_reset();
     setLED(0);
     _delay_ms(2000);
     wdt_reset();
     setLED(1);
-    _delay_ms(2000);
-    wdt_reset();
-    setLED(0);
 
     uart_puts("           INPUTS               |     OUTPUTS    \n");
     uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1\n");
