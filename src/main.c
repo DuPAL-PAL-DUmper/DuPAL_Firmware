@@ -18,7 +18,7 @@
 #include "main.h"
 
 #define VERSION "0.0.1"
-#define SOFT_HEADER "DuPAL - " VERSION "\n\n"
+#define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 #define STR_BUF_SIZE 128
 static char str_buf[STR_BUF_SIZE];
@@ -73,6 +73,7 @@ int main(void) {
 
     format_ioconf(io_inputs);
 
+    uart_puts("           INPUTS               |     OUTPUTS    \n");
     uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1\n");
     uart_puts("1 2 3 4 5 6 7 8 9 1 8 7 6 5 4 3 | 8 7 6 5 4 3 9 2\n");
     uart_puts("-------------------------------------------------\n");
@@ -102,12 +103,13 @@ int main(void) {
 
     uart_puts("Execution complete...\n");
 
+    // We're done, blink the led at 1Hz
     while(1) {
-        setLED(1);
-        _delay_ms(500);
+        _delay_ms(1000);
         wdt_reset(); // Kick the watchdog
         setLED(0);
-        _delay_ms(500);
+        _delay_ms(1000);
+        wdt_reset(); // Kick the watchdog
     }
 
 
