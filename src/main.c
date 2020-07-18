@@ -141,7 +141,7 @@ static uint8_t detect_inputs(void) {
 
 static void format_ioconf(uint8_t inputs) {
     memset(str_buf, 0, STR_BUF_SIZE);
-    sprintf(str_buf, "The following IO config was detected:\n");
+    sprintf(str_buf, "Detected IO config:\n");
     uart_puts(str_buf);
     
     uart_puts("IO1 IO2 IO3 IO4 IO5 IO6\n");
