@@ -65,3 +65,28 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10 IO1 IO2 IO3 IO4 IO5 IO6 | O1 O2 IO1 IO2 IO3 IO4 I
 - On the right side we get the **outputs**.
     - If an IO pin is set as input, the value here will be presented as `.`
     - If a tri-state output is in hi-z mode, their value will be presented as `x`
+
+##### Espresso logic minimizer format
+If a bruteforced PAL were composed only by inputs and two-state outputs, mapping the output of the DuPAL to the truth table required by the Espresso minimizer would be a breeze, but we also have two tri-state output, and three states cannot be mapped to simple boolean values :).
+The idea here is to create two additional outputs (`hiz1` and `hiz2` that indicates when the corresponding TRIO pin is in high impedence mode)
+
+###### Example
+This example contains 10 inputs, 6 outputs, and 2 tri-state outputs. This means we'll have a total of 10 outputs (8 + 2 to mark the hi-z mode)
+
+```
+.i 10
+.o 10 
+.ilb in1 in2 in3 in4 in5 in6 in7 in8 in9 in10
+.ob io1 io2 io3 io4 io5 io6 trio1 trio2 hiz1 hiz2
+
+0000000000 0001000001
+0000000001 1000000000
+    .....
+1111111111 0010000011
+
+.e
+
+```
+
+We can see that in the first combination we have TRIO2 in high impedence mode (`trio2` is low, but `hiz2` is high).
+In the last combination we have both the tristate outputs in high impedence.
