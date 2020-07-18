@@ -85,8 +85,11 @@ int main(void) {
     uint8_t read_1, read_2, trio_floating;
     // At worst, if all the IOs are set as inputs, we'll have to try 65536 combinations!
     for(uint32_t idx = 0; idx <= 0xFFFF; idx++) {
-        if((idx >> 10) & (~io_inputs & 0x3F)) continue; // Skip this round
-        
+        if((idx >> 10) & (~io_inputs & 0x3F)) {
+            wdt_reset();
+            continue; // Skip this round
+        }
+
         setLED(1);
         // First, try to force the TRIO to low
         compound_io_write(idx);
@@ -106,7 +109,7 @@ int main(void) {
         format_brutef(idx, io_inputs, trio_floating, read_2);
     }
 
-    uart_puts("Execution complete...\n");
+    uart_puts("Dump complete.\n");
 
     // We're done, blink the led at 1Hz
     while(1) {
