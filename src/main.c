@@ -144,8 +144,9 @@ static void format_ioconf(uint8_t inputs) {
     sprintf(str_buf, "The following IO config was detected:\n");
     uart_puts(str_buf);
     
+    uart_puts("IO1 IO2 IO3 IO4 IO5 IO6\n");
     memset(str_buf, 0, STR_BUF_SIZE);
-    sprintf(str_buf, "IO1 (18): %c\nIO2 (17): %c\nIO3 (16): %c\nIO4 (15): %c\nIO5 (14): %c\nIO6 (13): %c\n\n", 
+    sprintf(str_buf, " %c   %c   %c   %c   %c   %c\n\n", 
     ((inputs >> 0) & 0x01) ? 'I' : 'O',
     ((inputs >> 1) & 0x01) ? 'I' : 'O',
     ((inputs >> 2) & 0x01) ? 'I' : 'O',
