@@ -85,7 +85,7 @@ int main(void) {
     uint8_t read_1, read_2, trio_floating;
     // At worst, if all the IOs are set as inputs, we'll have to try 65536 combinations!
     for(uint32_t idx = 0; idx <= 0xFFFF; idx++) {
-        if((idx > 0) && ((idx & ~((uint16_t)io_inputs << 10)) == ((idx - 1) & ~((uint16_t)io_inputs << 10)))) continue; // Skip this round
+        if((idx >> 10) & (~io_inputs & 0x3F)) continue; // Skip this round
         
         setLED(1);
         // First, try to force the TRIO to low
