@@ -17,7 +17,7 @@
 
 #include "main.h"
 
-#define VERSION "0.0.2"
+#define VERSION "0.0.3"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 #define STR_BUF_SIZE 128
@@ -25,7 +25,7 @@ static char str_buf[STR_BUF_SIZE];
 
 static void setLED(uint8_t status);
 static void format_ioconf(uint8_t inputs);
-static void format_brutef(uint16_t idx, uint8_t inputs, uint8_t trio_float, uint8_t out_status);
+static void format_brutef(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol);
 
 static uint8_t detect_inputs(void);
 
@@ -84,16 +84,15 @@ int main(void) {
     uart_puts("1 2 3 4 5 6 7 8 9 1 8 7 6 5 4 3 | 8 7 6 5 4 3 9 2\n");
     uart_puts("-------------------------------------------------\n");
 
-    uint8_t read_1, read_2, trio_floating;
+    uint8_t read_1, read_2, floating;
     // At worst, if all the IOs are set as inputs, we'll have to try 65536 combinations!
     for(uint32_t idx = 0; idx <= 0xFFFF; idx++) {
-        if((idx >> 10) & (~io_inputs & 0x3F)) {
-            wdt_reset();
-            continue; // Skip this round
-        }
+        wdt_reset(); // Kick the watchdog
+
+        if((idx >> 10) & (~io_inputs & 0x3F)) continue; // Skip this round
 
         setLED(1);
-        // First, try to force the TRIO and the outputs to low
+        // First, try to force the the IOs and outputs to low
         compound_io_write(idx);
         _delay_us(50);
         read_1 = io_read();
@@ -104,12 +103,31 @@ int main(void) {
         _delay_us(50);
         read_2 = io_read();
 
-        trio_floating = (read_1 ^ read_2);
+        floating = (read_1 ^ read_2);
 
         setLED(0);
-        wdt_reset(); // Kick the watchdog
 
-        format_brutef(idx, io_inputs, trio_floating, read_2);
+        format_brutef(idx, io_inputs, floating, read_2, ' ');
+
+        // If we get in here, we're in a situation where we found some IOs what we detected as outputs
+        // that have become high-impedence. 
+        // In this case, they could be read as inputs and change the state of the other outputs,
+        // so we treat them as inputs and try to toggle all the combinations out of them to see if anything changes.
+        if(floating & 0x3F) {
+            for(uint8_t io_idx = 0; io_idx < 0x3F; io_idx++) { // Try all the combinations of 6 bits
+                wdt_reset();
+
+                if((io_idx & floating) != io_idx) continue; // Skip this run, we would be toggling pins that we did not find floating
+                compound_io_write((((uint32_t)(io_idx & 0x3F)) << 10) | idx); // Toggle them, by writing the current indices plus the combination of IO pins we found floating
+                read_1 = io_read(); // Read the result
+                
+                // Print what we read, but make sure to
+                // 1. Update the index with the current combination of outputs
+                // 2. Update the input list by adding the floating IOs we're toggling
+                // 3. Remove from the floating list the ones we're toggling
+                format_brutef(((((uint32_t)(io_idx & 0x3F)) << 10) | idx), (io_inputs | (floating & 0x3F)), (floating & 0xC0), read_1, '<');
+            }
+        } 
     }
 
     uart_puts("Dump complete.\n");
@@ -173,7 +191,7 @@ static void format_ioconf(uint8_t inputs) {
     uart_puts(str_buf);
 }
 
-static void format_brutef(uint16_t idx, uint8_t inputs, uint8_t trio_float, uint8_t out_status) {
+static void format_brutef(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol) {
     memset(str_buf, 0, STR_BUF_SIZE);
 
     char *str_ptr = str_buf;
@@ -199,7 +217,7 @@ static void format_brutef(uint16_t idx, uint8_t inputs, uint8_t trio_float, uint
     str_ptr++;
 
     for(uint8_t i = 0; i < 6; i++) {
-        if((trio_float >> i) & 0x01) *str_ptr = 'x'; // Check that this output is not in high impedence mode
+        if((floating >> i) & 0x01) *str_ptr = 'x'; // Check that this output is not in high impedence mode
         else if(!(inputs >> i & 0x01)) *str_ptr = ((out_status >> i) & 0x01) ? '1' : '0';
         else *str_ptr = '.';
         str_ptr++;
@@ -207,15 +225,22 @@ static void format_brutef(uint16_t idx, uint8_t inputs, uint8_t trio_float, uint
         str_ptr++;
     }
 
-    if(trio_float & 0x40) *str_ptr = 'x';
+    if(floating & 0x40) *str_ptr = 'x';
     else *str_ptr = ((out_status >> 6) & 0x01) ? '1' : '0';
     str_ptr++;
     *str_ptr = ' ';
     str_ptr++;
 
-    if(trio_float & 0x80) *str_ptr = 'x';
+    if(floating & 0x80) *str_ptr = 'x';
     else *str_ptr = ((out_status >> 7) & 0x01) ? '1' : '0';
     str_ptr++;
+
+    // Print the special symbol
+    *str_ptr = ' ';
+    str_ptr++;
+    *str_ptr = special_symbol;
+    str_ptr++;
+
     *str_ptr = '\n';
 
     uart_puts(str_buf);
