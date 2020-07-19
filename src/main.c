@@ -57,6 +57,8 @@ int main(void) {
 
     uart_puts(SOFT_HEADER); // Print the header
 
+    uart_puts("Detecting inputs...\n");
+
     // Detect the inputs on the PAL
    uint8_t io_inputs = detect_inputs();
 
@@ -91,17 +93,18 @@ int main(void) {
         }
 
         setLED(1);
-        // First, try to force the TRIO to low
+        // First, try to force the TRIO and the outputs to low
         compound_io_write(idx);
         _delay_us(50);
         read_1 = io_read();
         
         // Then try to force them to high
-        compound_io_write(0x030000 | idx);
+        // We will also try to force the pins that we did not detect as input in the beginning
+        compound_io_write(0x030000 | (((uint32_t)(~io_inputs & 0x3F)) << 10) | idx);
         _delay_us(50);
         read_2 = io_read();
 
-        trio_floating = ((read_1 & 0xC0) ^ (read_2 & 0xC0)) >> 6;
+        trio_floating = (read_1 ^ read_2);
 
         setLED(0);
         wdt_reset(); // Kick the watchdog
@@ -131,15 +134,26 @@ static void setLED(uint8_t status) {
 
 static uint8_t detect_inputs(void) {
     uint8_t read1, read2;
-    compound_io_write(0); // Zero everything
-    _delay_us(50);
+    uint8_t inputs = 0xFF;
 
-    read1 = io_read();
-    compound_io_write(0xFC00); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
-    _delay_us(50);
-    read2 = io_read();
+    setLED(1);
 
-    return (read1 ^ read2) & 0x3F;
+    for(uint16_t idx = 0; idx < 0x3FF; idx++) {
+        compound_io_write(idx); // Zero the potential outputs
+        _delay_us(50);
+        read1 = io_read();
+        compound_io_write(0xFC00 | idx); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
+        _delay_us(50); 
+        read2 = io_read();
+
+        inputs &= ((read1 ^ read2) & 0x3F);
+
+        wdt_reset();
+    }
+    
+    setLED(0);
+
+    return inputs;
 }
 
 static void format_ioconf(uint8_t inputs) {
@@ -185,20 +199,21 @@ static void format_brutef(uint16_t idx, uint8_t inputs, uint8_t trio_float, uint
     str_ptr++;
 
     for(uint8_t i = 0; i < 6; i++) {
-        if(!(inputs >> i & 0x01)) *str_ptr = ((out_status >> i) & 0x01) ? '1' : '0';
+        if((trio_float >> i) & 0x01) *str_ptr = 'x'; // Check that this output is not in high impedence mode
+        else if(!(inputs >> i & 0x01)) *str_ptr = ((out_status >> i) & 0x01) ? '1' : '0';
         else *str_ptr = '.';
         str_ptr++;
         *str_ptr = ' ';
         str_ptr++;
     }
 
-    if(trio_float & 0x01) *str_ptr = 'x';
+    if(trio_float & 0x40) *str_ptr = 'x';
     else *str_ptr = ((out_status >> 6) & 0x01) ? '1' : '0';
     str_ptr++;
     *str_ptr = ' ';
     str_ptr++;
 
-    if(trio_float & 0x02) *str_ptr = 'x';
+    if(trio_float & 0x80) *str_ptr = 'x';
     else *str_ptr = ((out_status >> 7) & 0x01) ? '1' : '0';
     str_ptr++;
     *str_ptr = '\n';
