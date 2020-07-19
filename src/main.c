@@ -17,7 +17,7 @@
 
 #include "main.h"
 
-#define VERSION "0.0.1"
+#define VERSION "0.0.2"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 #define STR_BUF_SIZE 128

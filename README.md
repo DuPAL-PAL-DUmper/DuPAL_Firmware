@@ -9,7 +9,7 @@ The **PAL16L8** is a relatively simple device.
 It has:
 - 10 Input pins (1-9, 11)
 - 2 tri-state outputs (12, 19)
-- 6 selectable Input / Output (not tristate) pins (13-18)
+- 6 selectable Input / Output pins (13-18)
 - 0 registered outputs
 
 Having no registered outputs means that this device has no memory of previous states, so it can be bruteforced with relative ease.
@@ -39,8 +39,8 @@ The procedure will then be the following
     - If it is **high**, then the **PAL pin** is an **output**
     - Otherwise, the **PAL pin** is either an **input** or in **hi-Z** (see below)
 
-Whether a pin is in tri-state or an input produces the same result with this method, but we know that only pin 12 and 19 can be a tri-state and in high-Z mode, and those pins will always be of **output** type.
-Every other pin we find to vary depending on out output, can be safely marked as **input**.
+Whether a pin is in tri-state or an input produces the same result with this method, we know that pin 12 and 19 can be output only and support tri-state, so those pins will always be of **output** type.
+For every other IO pin, we'll go through the 1024 combinations of the input pins (remember we have 10 input pins) and record which of the IO pins is consistently in hi-z state. We'll mark these pins as **input**.
 
 This must be done for every unknown pin (and to test whether the outputs in 12 or 19 are hi-Z). And for pins 13 to 18 this must be done prior starting the bruteforcing.
 
@@ -56,37 +56,37 @@ It's important to note that when testing an input combination, we can read the o
 We can then output something in the following form for every combination
 
 ```
-I1 I2 I3 I4 I5 I6 I7 I8 I9 I10 IO1 IO2 IO3 IO4 IO5 IO6 | O1 O2 IO1 IO2 IO3 IO4 IO5 IO6
- 0  0  0  1  1  0  0  0  1   0   0   .   .   .   1   . |  x  1   .   1   1   0   .   0
+I1 I2 I3 I4 I5 I6 I7 I8 I9 I10 IO1 IO2 IO3 IO4 IO5 IO6 | IO1 IO2 IO3 IO4 IO5 IO6 O1 O2
+ 0  0  0  1  1  0  0  0  1   0   0   .   .   .   1   . |   .   1   1   0   .   0  x  1
 ```
 
 - On the left side we get all the **inputs**
     - If an IO pin is set as output, their value will be presented as `.`
 - On the right side we get the **outputs**.
     - If an IO pin is set as input, the value here will be presented as `.`
-    - If a tri-state output is in hi-z mode, their value will be presented as `x`
+    - If an output is in hi-z mode, their value will be presented as `x`
 
 ##### Espresso logic minimizer format
-If a bruteforced PAL were composed only by inputs and two-state outputs, mapping the output of the DuPAL to the truth table required by the Espresso minimizer would be a breeze, but we also have two tri-state output, and three states cannot be mapped to simple boolean values :).
-The idea here is to create two additional outputs (`hiz1` and `hiz2` that indicates when the corresponding TRIO pin is in high impedence mode)
+If a bruteforced PAL were composed only by inputs and two-state outputs, mapping the output of the DuPAL to the truth table required by the Espresso minimizer would be a breeze, but we also have tri-state outputs, and three states cannot be mapped to simple boolean values :).
+The idea here is to create additional outputs (`hizo1`, `hizo2`, `hizio1`, `hizio2` etc...) that indicates when the corresponding output pin is in high impedence mode
 
 ###### Example
-This example contains 10 inputs, 6 outputs, and 2 tri-state outputs. This means we'll have a total of 10 outputs (8 + 2 to mark the hi-z mode)
+This example contains 10 inputs, 6 outputs, and 2 tri-state outputs. This means we'll have a total of 16 outputs (8 for the boolean value, plus 8 more for the hi-z state)
 
 ```
 .i 10
-.o 10 
+.o 16
 .ilb in1 in2 in3 in4 in5 in6 in7 in8 in9 in10
-.ob io1 io2 io3 io4 io5 io6 trio1 trio2 hiz1 hiz2
+.ob io1 io2 io3 io4 io5 io6 o1 o2 hizo1 hizo2 hizio1 hizio2 hizio3 hizio4 hizio5 hizio6
 
-0000000000 0001000001
-0000000001 1000000000
+0000000000 0001000001000000
+0000000001 1000000000000000
     .....
-1111111111 0010000011
+1111111111 0010000011000000
 
 .e
 
 ```
 
-We can see that in the first combination we have TRIO2 in high impedence mode (`trio2` is low, but `hiz2` is high).
-In the last combination we have both the tristate outputs in high impedence.
+We can see that in the first combination we have `o2` in high impedence mode (`o2` is low, but `hizo2` is high).
+In the last combination we have both `o1` and `o2` in high impedence.
