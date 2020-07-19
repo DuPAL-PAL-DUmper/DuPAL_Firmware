@@ -44,7 +44,8 @@ FORMAT = ihex
 TARGET = out/DuPAL
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = src/main.c src/libs/ioconfig/ioconfig.c src/libs/uart/uart.c src/libs/utils/compound_io.c src/libs/utils/strutils.c src/libs/shifter/shifter.c
+SRC = src/main.c src/libs/ioconfig/ioconfig.c src/libs/uart/uart.c src/libs/utils/compound_io.c src/libs/utils/strutils.c src/libs/shifter/shifter.c \
+		src/libs/pal_types/PAL16L8.c
 
 # List Assembler source files here.
 #     Make them always end in a capital .S.  Files ending in a lowercase .s
@@ -93,7 +94,7 @@ CDEFS = -DF_CPU=$(F_CPU)UL
 
 
 # Place -I options here
-CINCS = -Isrc/libs/ -Isrc/libs/ioconfig/ -Isrc/libs/uart/ -Isrc/libs/utils/ -Isrc/libs/shifter/
+CINCS = -Isrc/libs/ -Isrc/libs/ioconfig/ -Isrc/libs/uart/ -Isrc/libs/utils/ -Isrc/libs/shifter/ -Isrc/libs/pal_types
 
 
 #---------------- Compiler Options ----------------
