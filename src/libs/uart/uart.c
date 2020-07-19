@@ -110,9 +110,9 @@ void uart_init(void) {
     UART_UCSRB = (1 << UART_RXEN) | (1 << UART_TXEN);   /* Enable RX and TX */
 }
 
-int uart_putchar(char c, FILE *stream) {
+int uart_putchar(char c) {
     if (c == '\n') {
-        uart_putchar('\r', stream);
+        uart_putchar('\r');
     }
     loop_until_bit_is_set(UART_UCSRA, UART_UDRE);
     UART_UDR = c;
@@ -120,7 +120,7 @@ int uart_putchar(char c, FILE *stream) {
     return 0;
 }
 
-int uart_getchar(FILE *stream) {
+int uart_getchar(void) {
     loop_until_bit_is_set(UART_UCSRA, UART_RXC);
 
     return UART_UDR;
@@ -128,7 +128,7 @@ int uart_getchar(FILE *stream) {
 
 void uart_puts(char *c) {
     while(*c) {
-        uart_putchar(*c, NULL);
+        uart_putchar(*c);
         c++;
     }
 }
