@@ -84,13 +84,13 @@ int main(void) {
 
         setLED(1);
         // First, try to force the the IOs and outputs to low
-        compound_io_write(idx);
+        ioutils_write(idx);
         _delay_us(50);
         read_1 = io_read();
         
         // Then try to force them to high
         // We will also try to force the pins that we did not detect as input in the beginning
-        compound_io_write(0x030000 | (((uint32_t)(~io_inputs & 0x3F)) << 10) | idx);
+        ioutils_write(0x030000 | (((uint32_t)(~io_inputs & 0x3F)) << 10) | idx);
         _delay_us(50);
         read_2 = io_read();
 
@@ -109,7 +109,7 @@ int main(void) {
                 wdt_reset();
 
                 if((io_idx & floating) != io_idx) continue; // Skip this run, we would be toggling pins that we did not find floating
-                compound_io_write((((uint32_t)(io_idx & 0x3F)) << 10) | idx); // Toggle them, by writing the current indices plus the combination of IO pins we found floating
+                ioutils_write((((uint32_t)(io_idx & 0x3F)) << 10) | idx); // Toggle them, by writing the current indices plus the combination of IO pins we found floating
                 read_1 = io_read(); // Read the result
                 
                 // Print what we read, but make sure to
@@ -148,10 +148,10 @@ static uint8_t detect_inputs(void) {
     setLED(1);
 
     for(uint16_t idx = 0; idx < 0x3FF; idx++) {
-        compound_io_write(idx); // Zero the potential outputs
+        ioutils_write(idx); // Zero the potential outputs
         _delay_us(50);
         read1 = io_read();
-        compound_io_write(0xFC00 | idx); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
+        ioutils_write(0xFC00 | idx); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
         _delay_us(50); 
         read2 = io_read();
 
