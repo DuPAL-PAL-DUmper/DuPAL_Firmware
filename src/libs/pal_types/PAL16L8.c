@@ -12,7 +12,7 @@
 static uint8_t detect_inputs(void);
 
 void pal16l8_analyze(void) {
-    uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-");
+    uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n\n");
 
     ioutils_setLED(1); // Turn the LED on
 

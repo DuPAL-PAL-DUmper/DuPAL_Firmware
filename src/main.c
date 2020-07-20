@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #include <avr/io.h>
 #include <avr/wdt.h>
@@ -18,6 +19,8 @@
 
 #define VERSION "0.0.3"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
+
+static void print_supported_pal(void);
 
 int main(void) {
 #if defined (__AVR_ATmega328P__)
@@ -41,9 +44,35 @@ int main(void) {
     // Enable interrupts
     sei();
 
+
     uart_puts(SOFT_HEADER); // Print the header
 
-    pal16l8_analyze();
+    print_supported_pal();
+
+    void (*pal_analyzer)(void) = NULL;
+
+    ioutils_setLED(0);
+
+    while(1) {
+        if(uart_charavail()) {
+            char sel = uart_getchar();
+
+            switch(sel) {
+                case 'a':
+                    pal_analyzer = pal16l8_analyze;
+                    break;
+                default:
+                    uart_puts("Current selection not supported.\n");
+                    pal_analyzer = NULL;
+                    break;
+            }
+
+            if(pal_analyzer) break; // Get out of here!
+        }
+        wdt_reset();
+    }
+
+    (*pal_analyzer)();
 
     uart_puts("Analisys complete.\n");
 
@@ -58,6 +87,14 @@ int main(void) {
 
 
     return 0;
+}
+
+static void print_supported_pal(void) {
+    uart_puts("Select which PAL type to analyze:\n");
+    uart_puts("---------------------------------\n");
+    uart_puts("a) PAL16L8/PAL10L8\n");
+    uart_puts("b) PAL12L6\n");
+    uart_puts("Press the corresponding letter to start analisys.\n\n");
 }
 
 ISR(INT1_vect) { // Manage INT1

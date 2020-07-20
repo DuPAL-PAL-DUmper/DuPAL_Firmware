@@ -110,6 +110,10 @@ void uart_init(void) {
     UART_UCSRB = (1 << UART_RXEN) | (1 << UART_TXEN);   /* Enable RX and TX */
 }
 
+int uart_charavail(void) {
+    return UART_UCSRA & UART_RXC;
+}
+
 int uart_putchar(char c) {
     if (c == '\n') {
         uart_putchar('\r');
