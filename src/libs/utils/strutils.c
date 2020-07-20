@@ -59,12 +59,14 @@ void strutils_print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint
         str_ptr++;
     }
 
+    // Pin 19
     if(floating & 0x40) *str_ptr = 'x';
     else *str_ptr = ((out_status >> 6) & 0x01) ? '1' : '0';
     str_ptr++;
     *str_ptr = ' ';
     str_ptr++;
 
+    // Pin 12
     if(floating & 0x80) *str_ptr = 'x';
     else *str_ptr = ((out_status >> 7) & 0x01) ? '1' : '0';
     str_ptr++;

@@ -22,7 +22,7 @@ uint8_t io_read(void) {
             ((PIND & (_BV(2) | _BV(3) | _BV(4) | _BV(5))) << 2);
 }
 
-void trio_write(uint8_t val) {
+void io_write(uint8_t val) {
     PORTD = (PORTD & ~(_BV(6) | _BV(7))) | (val & 0x03) << 6; 
 }
 

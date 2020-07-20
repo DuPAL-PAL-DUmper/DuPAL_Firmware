@@ -53,15 +53,15 @@
 void io_init(void);
 
 /*
- * This will return a byte that contains, from MSB to LSB
- * TRIO1, TRIO2, IO6, IO5, IO4, IO3, IO2, IO1
+ * This will return a byte that contains the status of the PAL pins, from MSB to LSB 
+ * 12, 19, 13, 14, 15, 16, 17, 18
  */
 uint8_t io_read(void);
 
 /*
- * Write the two TRIO outputs, from MSB to LSB
- * TRIO2, TRIO1
+ * Write the two pins directly connected to the MCU, from MSB to LSB
+ * 12, 19
  */
-void trio_write(uint8_t val);
+void io_write(uint8_t val);
 
 #endif /* _MCU_IO_H_ */
