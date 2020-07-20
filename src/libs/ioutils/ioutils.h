@@ -27,4 +27,6 @@
  */
 void ioutils_write(uint32_t val);
 
+void ioutils_setLED(uint8_t status);
+
 #endif /* _IOUTILS_H_ */

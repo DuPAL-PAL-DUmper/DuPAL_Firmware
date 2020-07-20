@@ -18,8 +18,6 @@
 #define VERSION "0.0.3"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
-static void setLED(uint8_t status);
-
 static uint8_t detect_inputs(void);
 
 int main(void) {
@@ -44,7 +42,7 @@ int main(void) {
     // Prepare the shifter
     shifter_init();
 
-    setLED(1); // Turn the LED on
+    ioutils_setLED(1); // Turn the LED on
 
     uart_puts(SOFT_HEADER); // Print the header
 
@@ -63,9 +61,9 @@ int main(void) {
     
     // Reset the watchdog and blink a bit
     for(uint8_t i = 0; i < 5; i++) {
-        setLED(1);
+        ioutils_setLED(1);
         _delay_ms(500);
-        setLED(0);
+        ioutils_setLED(0);
         _delay_ms(500);
         wdt_reset();
     }
@@ -82,7 +80,7 @@ int main(void) {
 
         if((idx >> 10) & (~io_inputs & 0x3F)) continue; // Skip this round
 
-        setLED(1);
+        ioutils_setLED(1);
         // First, try to force the the IOs and outputs to low
         ioutils_write(idx);
         _delay_us(50);
@@ -96,7 +94,7 @@ int main(void) {
 
         floating = (read_1 ^ read_2);
 
-        setLED(0);
+        ioutils_setLED(0);
 
         strutils_print_pinstat(idx, io_inputs, floating, read_2, ' ');
 
@@ -127,7 +125,7 @@ int main(void) {
     while(1) {
         _delay_ms(1000);
         wdt_reset(); // Kick the watchdog
-        setLED(0);
+        ioutils_setLED(0);
         _delay_ms(1000);
         wdt_reset(); // Kick the watchdog
     }
@@ -136,16 +134,11 @@ int main(void) {
     return 0;
 }
 
-static void setLED(uint8_t status) {
-    if(!status) LEDPORT &= ~(_BV(LED_P)); // Turn the LED off
-    else LEDPORT |= _BV(LED_P); // Turn the LED on
-}
-
 static uint8_t detect_inputs(void) {
     uint8_t read1, read2;
     uint8_t inputs = 0xFF;
 
-    setLED(1);
+    ioutils_setLED(1);
 
     for(uint16_t idx = 0; idx < 0x3FF; idx++) {
         ioutils_write(idx); // Zero the potential outputs
@@ -160,7 +153,7 @@ static uint8_t detect_inputs(void) {
         wdt_reset();
     }
     
-    setLED(0);
+    ioutils_setLED(0);
 
     return inputs;
 }
