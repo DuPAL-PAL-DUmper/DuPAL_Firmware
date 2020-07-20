@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-void strutils_print_6io_conf(uint8_t inputs);
-void strutils_print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol);
+#define STR_BUF_SIZE 128
+char str_buf[STR_BUF_SIZE];
+
 
 #endif /* _STRUTILS_HEADER_ */

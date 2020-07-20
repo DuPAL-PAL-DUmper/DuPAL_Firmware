@@ -10,6 +10,8 @@
 #include <util/delay.h>
 
 #include <pal_types/PAL16L8.h>
+#include <pal_types/PAL12L6.h>
+
 #include <ioutils/mcu_io.h>
 #include <ioutils/ioutils.h>
 
@@ -17,7 +19,7 @@
 #include <shifter/shifter.h>
 
 
-#define VERSION "0.0.3"
+#define VERSION "0.0.5"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 static void print_supported_pal(void);
@@ -60,6 +62,9 @@ int main(void) {
             switch(sel) {
                 case 'a':
                     pal_analyzer = pal16l8_analyze;
+                    break;
+                case 'b':
+                    pal_analyzer = pal12l6_analyze;
                     break;
                 default:
                     uart_puts("Current selection not supported.\n");

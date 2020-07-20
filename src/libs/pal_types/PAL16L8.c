@@ -1,7 +1,9 @@
 #include "PAL16L8.h"
 
-#include <avr/wdt.h>
+#include <string.h>
+#include <stdio.h>
 
+#include <avr/wdt.h>
 #include <util/delay.h>
 
 #include <uart/uart.h>
@@ -10,9 +12,11 @@
 #include <utils/strutils.h>
 
 static uint8_t detect_inputs(void);
+static void print_6io_conf(uint8_t inputs);
+static void print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol);
 
 void pal16l8_analyze(void) {
-    uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n\n");
+    uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n");
 
     ioutils_setLED(1); // Turn the LED on
 
@@ -27,7 +31,7 @@ void pal16l8_analyze(void) {
 
     wdt_reset();
 
-    strutils_print_6io_conf(io_inputs);
+    print_6io_conf(io_inputs);
 
     // Reset the watchdog and blink a bit
     for(uint8_t i = 0; i < 5; i++) {
@@ -66,7 +70,7 @@ void pal16l8_analyze(void) {
 
         ioutils_setLED(0);
 
-        strutils_print_pinstat(idx, io_inputs, floating, read_2, ' ');
+        print_pinstat(idx, io_inputs, floating, read_2, ' ');
 
         // If we get in here, we're in a situation where we found some IOs what we detected as outputs
         // that have become high-impedence.
@@ -84,7 +88,7 @@ void pal16l8_analyze(void) {
                 // 1. Update the index with the current combination of outputs
                 // 2. Update the input list by adding the floating IOs we're toggling
                 // 3. Remove from the floating list the ones we're toggling
-                strutils_print_pinstat(((((uint32_t)(io_idx & 0x3F)) << 10) | idx), (io_inputs | (floating & 0x3F)), (floating & 0xC0), read_1, '<');
+                print_pinstat(((((uint32_t)(io_idx & 0x3F)) << 10) | idx), (io_inputs | (floating & 0x3F)), (floating & 0xC0), read_1, '<');
             }
         }
     }
@@ -112,4 +116,78 @@ static uint8_t detect_inputs(void) {
     ioutils_setLED(0);
 
     return inputs;
+}
+
+static void print_6io_conf(uint8_t inputs) {
+    memset(str_buf, 0, STR_BUF_SIZE);
+    sprintf(str_buf, "Detected IO config:\n");
+    uart_puts(str_buf);
+    
+    uart_puts("IO1 IO2 IO3 IO4 IO5 IO6\n");
+    memset(str_buf, 0, STR_BUF_SIZE);
+    sprintf(str_buf, " %c   %c   %c   %c   %c   %c\n\n", 
+    ((inputs >> 0) & 0x01) ? 'I' : 'O',
+    ((inputs >> 1) & 0x01) ? 'I' : 'O',
+    ((inputs >> 2) & 0x01) ? 'I' : 'O',
+    ((inputs >> 3) & 0x01) ? 'I' : 'O',
+    ((inputs >> 4) & 0x01) ? 'I' : 'O',
+    ((inputs >> 5) & 0x01) ? 'I' : 'O');
+    uart_puts(str_buf);
+}
+
+static void print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol) {
+    memset(str_buf, 0, STR_BUF_SIZE);
+
+    char *str_ptr = str_buf;
+    for(uint8_t i = 0; i < 10; i++) {
+        *str_ptr = ((idx >> i) & 0x01) ? '1' : '0';
+        str_ptr++;
+        *str_ptr = ' ';
+        str_ptr++;
+    }
+
+    for(uint8_t i = 0; i < 6; i++) {
+        if(((inputs >> i) & 0x01)) *str_ptr = ((idx >> (10+i)) & 0x01) ? '1' : '0';
+        else *str_ptr = '.';
+
+        str_ptr++;
+        *str_ptr = ' ';
+        str_ptr++;
+    }
+
+    *str_ptr = '|';
+    str_ptr++;
+    *str_ptr = ' ';
+    str_ptr++;
+
+    for(uint8_t i = 0; i < 6; i++) {
+        if((floating >> i) & 0x01) *str_ptr = 'x'; // Check that this output is not in high impedence mode
+        else if(!(inputs >> i & 0x01)) *str_ptr = ((out_status >> i) & 0x01) ? '1' : '0';
+        else *str_ptr = '.';
+        str_ptr++;
+        *str_ptr = ' ';
+        str_ptr++;
+    }
+
+    // Pin 19
+    if(floating & 0x40) *str_ptr = 'x';
+    else *str_ptr = ((out_status >> 6) & 0x01) ? '1' : '0';
+    str_ptr++;
+    *str_ptr = ' ';
+    str_ptr++;
+
+    // Pin 12
+    if(floating & 0x80) *str_ptr = 'x';
+    else *str_ptr = ((out_status >> 7) & 0x01) ? '1' : '0';
+    str_ptr++;
+
+    // Print the special symbol
+    *str_ptr = ' ';
+    str_ptr++;
+    *str_ptr = special_symbol;
+    str_ptr++;
+
+    *str_ptr = '\n';
+
+    uart_puts(str_buf);
 }
