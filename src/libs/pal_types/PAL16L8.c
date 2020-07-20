@@ -12,6 +12,8 @@
 static uint8_t detect_inputs(void);
 
 void pal16l8_analyze(void) {
+    uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-");
+
     ioutils_setLED(1); // Turn the LED on
 
     uart_puts("Detecting inputs...\n");
@@ -25,7 +27,7 @@ void pal16l8_analyze(void) {
 
     wdt_reset();
 
-    strutils_print_ioconf(io_inputs);
+    strutils_print_6io_conf(io_inputs);
 
     // Reset the watchdog and blink a bit
     for(uint8_t i = 0; i < 5; i++) {

@@ -8,7 +8,7 @@
 #define STR_BUF_SIZE 128
 static char str_buf[STR_BUF_SIZE];
 
-void strutils_print_ioconf(uint8_t inputs) {
+void strutils_print_6io_conf(uint8_t inputs) {
     memset(str_buf, 0, STR_BUF_SIZE);
     sprintf(str_buf, "Detected IO config:\n");
     uart_puts(str_buf);
