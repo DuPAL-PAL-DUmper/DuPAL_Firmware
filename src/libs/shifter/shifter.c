@@ -1,7 +1,7 @@
 #include "shifter.h"
 
 #include <util/delay.h>
-#include <ioconfig.h>
+#include <mcu_io.h>
 
 static inline void toggle_SRCLK(void);
 static inline void toggle_RCLK(void);

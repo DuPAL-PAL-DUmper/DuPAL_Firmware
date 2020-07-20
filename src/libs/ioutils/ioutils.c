@@ -1,7 +1,7 @@
-#include "compound_io.h"
+#include "ioutils.h"
 
-#include <shifter.h>
-#include <ioconfig.h>
+#include <ioutils/mcu_io.h>
+#include <shifter/shifter.h>
 
 void compound_io_write(uint32_t val) {
     shifter_set((uint16_t)(val & 0xFFFF));

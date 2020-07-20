@@ -1,5 +1,5 @@
-#ifndef _IOCONFIG_H_
-#define _IOCONFIG_H_
+#ifndef _MCU_IO_H_
+#define _MCU_IO_H_
 
 /*  
  *  Connections map
@@ -64,4 +64,4 @@ uint8_t io_read(void);
  */
 void trio_write(uint8_t val);
 
-#endif /* _IOCONFIG_H_ */
+#endif /* _MCU_IO_H_ */

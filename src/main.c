@@ -6,11 +6,11 @@
 #include <avr/wdt.h>
 #include <avr/interrupt.h>
 
-#include "ioconfig.h"
+#include "mcu_io.h"
+#include "ioutils.h"
 
 #include "uart.h"
 #include "shifter.h"
-#include "compound_io.h"
 #include "strutils.h"
 
 #include "main.h"
