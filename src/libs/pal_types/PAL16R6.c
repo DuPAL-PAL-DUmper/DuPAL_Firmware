@@ -1,4 +1,4 @@
-#include "PAL16R4.h"
+#include "PAL16R6.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -11,6 +11,6 @@
 #include <ioutils/ioutils.h>
 #include <utils/strutils.h>
 
-void pal16r4_analyze(void) {
+void pal16r6_analyze(void) {
     ;
 }
