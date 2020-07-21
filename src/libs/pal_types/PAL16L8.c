@@ -86,6 +86,8 @@ static void pal16l8_analyze_internal(uint8_t dynamic_inputs) {
         // that have become high-impedence.
         // In this case, they could be read as inputs and change the state of the other outputs,
         // so we treat them as inputs and try to toggle all the combinations out of them to see if anything changes.
+        //
+        // Note that, according to an AMD datasheet, these pins can be used as input only if the output is always disabled!
         if((floating & 0x3F) && dynamic_inputs) {
             for(uint8_t io_idx = 0; io_idx < 0x3F; io_idx++) { // Try all the combinations of 6 bits
                 wdt_reset();
