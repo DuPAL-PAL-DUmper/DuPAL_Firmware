@@ -11,6 +11,7 @@
 
 #include <pal_types/PAL16L8.h>
 #include <pal_types/PAL12L6.h>
+#include <pal_types/PAL16R6.h>
 
 #include <ioutils/mcu_io.h>
 #include <ioutils/ioutils.h>
@@ -69,6 +70,9 @@ int main(void) {
                 case 'c':
                     pal_analyzer = pal12l6_analyze;
                     break;
+                case 'd':
+                    pal_analyzer = pal16r6_analyze;
+                    break;
                 default:
                     uart_puts("Current selection not supported.\n");
                     pal_analyzer = NULL;
@@ -103,6 +107,7 @@ static void print_supported_pal(void) {
     uart_puts("a) PAL16L8/PAL10L8\n");
     uart_puts("b) PAL16L8 - test hi-z outputs as inputs\n");
     uart_puts("c) PAL12L6\n");
+    uart_puts("d) PAL16R6\n");
     uart_puts("Press the corresponding letter to start analisys.\n\n");
 }
 

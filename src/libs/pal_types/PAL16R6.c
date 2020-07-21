@@ -12,5 +12,5 @@
 #include <utils/strutils.h>
 
 void pal16r6_analyze(void) {
-    ;
+    uart_puts("Not implemented.\n");
 }
