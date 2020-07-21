@@ -4,19 +4,33 @@ PAL is an acronym which means *Programmable Array Logic*, that is, these ICs are
 
 Most of the PAL ICs in the devices floating around are read-protected: this means that you cannot ask the device to read its content, leaving only bruteforce as a way to recover the programming.
 
-### The PAL16L8
-The **PAL16L8** is a relatively simple device.
-It has:
-- 10 Input pins (1-9, 11)
+### Supported PAL devices
+#### PAL10L8
+The **PAL10L8** has:
+- 10 input pins (1-9, 11)
+- 8 output pins (12-19)
+
+This device has no tri-state outputs and no registered outputs. Bruteforcing is a simple matter of trying all the combinations.
+The analisys logic is a subset of the **PAL16L8** below.
+
+#### PAL16L8
+The **PAL16L8** has:
+- 10 input pins (1-9, 11)
 - 2 tri-state outputs (12, 19)
 - 6 selectable Input / Output pins (13-18)
-- 0 registered outputs
 
 Having no registered outputs means that this device has no memory of previous states, so it can be bruteforced with relative ease.
 
 If we're working with a PAL in a known circuit, we can infer which pins are inputs and outputs by looking at the schematics, but if we're working with a PAL placed in a circuit of which we know nothing, we need to find a way to identify which pin is which type.
 
-####  How to discriminate between input, output and tri-state
+#### PAL12L6
+The **PAL12L6** has:
+- 12 input pins (1-9, 11, 12, 19)
+- 6 output pins (13-18)
+
+Having no registered or open collector outputs means that bruteforcing is just a matter of trying all inputs.
+
+###  How to discriminate between input, output and tri-state
 We can connect unknown pins from the PAL to two pins from our MCU:
 - One connection will be direct, and will be to an *input* of our microcontroller
 - The second connection will be through a resistor of relatively high value (e.g. 10k) to an output pin of our microcontroller
@@ -44,15 +58,15 @@ For every other IO pin, we'll go through the 1024 combinations of the input pins
 
 This must be done for every unknown pin (and to test whether the outputs in 12 or 19 are hi-Z). And for pins 13 to 18 this must be done prior starting the bruteforcing.
 
-##### Why this works?
+#### Why this works?
 The resistor will avoid a short-circuit in case the PAL pin is an output, and it will also make the MCU output drive weak enough to not be able to change the state of said PAL output, but still strong enough to change the state in case the pin is an input (or an output in hi-Z mode).
 In short, the resistor will make the outputs act a dynamic pull-ups/downs.
 
-#### How to bruteforce the content
+### How to bruteforce the content
 Once which pins are inputs or outputs is known, we can then proceed to try every input combination and record the output.
 It's important to note that when testing an input combination, we can read the output pins between 13 and 18 (minus those that are found as inputs, of course) directly, but outputs on 12 and 19 require that we toggle the MCU output connected to them high/low and check that the output is not in hi-Z mode.
 
-##### Output format
+#### Output format
 We can then output something in the following form for every combination
 
 ```
