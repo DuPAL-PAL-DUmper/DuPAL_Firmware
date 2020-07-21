@@ -19,7 +19,7 @@
 #include <shifter/shifter.h>
 
 
-#define VERSION "0.0.5"
+#define VERSION "0.0.6"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 static void print_supported_pal(void);
@@ -58,12 +58,15 @@ int main(void) {
     while(1) {
         if(uart_charavail()) {
             char sel = uart_getchar();
-
+        
             switch(sel) {
                 case 'a':
                     pal_analyzer = pal16l8_analyze;
                     break;
                 case 'b':
+                    pal_analyzer = pal16l8_analyze_dyn;
+                    break;
+                case 'c':
                     pal_analyzer = pal12l6_analyze;
                     break;
                 default:
@@ -98,7 +101,8 @@ static void print_supported_pal(void) {
     uart_puts("Select which PAL type to analyze:\n");
     uart_puts("---------------------------------\n");
     uart_puts("a) PAL16L8/PAL10L8\n");
-    uart_puts("b) PAL12L6\n");
+    uart_puts("b) PAL16L8 - test hi-z outputs as inputs\n");
+    uart_puts("c) PAL12L6\n");
     uart_puts("Press the corresponding letter to start analisys.\n\n");
 }
 

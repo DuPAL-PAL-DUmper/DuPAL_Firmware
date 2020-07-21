@@ -111,7 +111,7 @@ void uart_init(void) {
 }
 
 int uart_charavail(void) {
-    return UART_UCSRA & UART_RXC;
+    return !bit_is_clear(UART_UCSRA, UART_RXC);
 }
 
 int uart_putchar(char c) {
