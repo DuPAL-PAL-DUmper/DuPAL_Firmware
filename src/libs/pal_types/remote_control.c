@@ -34,6 +34,8 @@ void remote_control_analyze(void) {
 
     while(1) {
         if(receive_pkt()) {
+            ioutils_setLED(1);
+
             switch(pkt_buffer[0]) {
                 case CMD_WRITE: {
                         uint32_t addr = strutils_str_to_u32(&pkt_buffer[2]) & 0x3FFFF;
@@ -67,6 +69,8 @@ void remote_control_analyze(void) {
                     uart_puts(CMD_ERROR);
                     break;
             }
+
+            ioutils_setLED(0);
         }
 
         wdt_reset();
