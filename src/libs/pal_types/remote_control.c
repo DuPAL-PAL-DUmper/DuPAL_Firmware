@@ -13,6 +13,8 @@
 #define PKT_BUFFER_SIZE 32
 #define PKT_START '>'
 #define PKT_END '<'
+#define RESP_START '['
+#define RESP_END ']'
 
 #define CMD_WRITE 'W'
 #define CMD_READ 'R'
@@ -36,22 +38,22 @@ void remote_control_analyze(void) {
                 case CMD_WRITE: {
                         uint32_t addr = strutils_str_to_u32(&pkt_buffer[2]) & 0x3FFFF;
                         ioutils_write(addr);
-                        pkt_buffer[0] = PKT_START;
+                        pkt_buffer[0] = RESP_START;
                         pkt_buffer[1] = CMD_WRITE;
                         pkt_buffer[2] = ' ';
                         strutils_u32_to_str(&pkt_buffer[3], addr);
-                        pkt_buffer[11] = PKT_END;
+                        pkt_buffer[11] = RESP_END;
                         pkt_buffer[12] = '\n';
                         pkt_buffer[13] = 0;
                         uart_puts(pkt_buffer);
                     }
                     break;
                 case CMD_READ:
-                    pkt_buffer[0] = PKT_START;
+                    pkt_buffer[0] = RESP_START;
                     pkt_buffer[1] = CMD_READ;
                     pkt_buffer[2] = ' ';
                     strutils_u8_to_str(&pkt_buffer[3], io_read());
-                    pkt_buffer[5] = PKT_END;
+                    pkt_buffer[5] = RESP_END;
                     pkt_buffer[6] = '\n';
                     pkt_buffer[7] = 0;
 
