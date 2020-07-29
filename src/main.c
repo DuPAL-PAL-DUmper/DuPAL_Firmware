@@ -20,7 +20,7 @@
 #include <shifter/shifter.h>
 
 
-#define VERSION "0.0.6"
+#define VERSION "0.0.7"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 static void print_supported_pal(void);

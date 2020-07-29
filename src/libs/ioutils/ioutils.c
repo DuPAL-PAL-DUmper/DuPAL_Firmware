@@ -4,8 +4,8 @@
 #include <shifter/shifter.h>
 
 void ioutils_write(uint32_t val) {
-    shifter_set((uint16_t)(val & 0xFFFF));
     io_write((uint8_t)((val >> 16) & 0x03));
+    shifter_set((uint16_t)(val & 0xFFFF));
 }
 
 void ioutils_setLED(uint8_t status) {
