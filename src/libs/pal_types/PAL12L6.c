@@ -17,10 +17,10 @@ void pal12l6_analyze(void) {
 
     ioutils_setLED(1); // Turn the LED on
 
-    uart_puts("        INPUTS          |   OUTPUTS  \n");
-    uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 | 1 1 1 1 1 1\n");
-    uart_puts("1 2 3 4 5 6 7 8 9 1 2 9 | 8 7 6 5 4 3\n");
-    uart_puts("-------------------------------------\n");
+    uart_puts(".i 12\n");
+    uart_puts(".o 6\n");
+    uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i11 i12 i19\n");
+    uart_puts(".ob o18 o17 o16 o15 o14 o13\n");
 
     uint8_t read_1, read_2, floating;
     for(uint32_t idx = 0; idx <= 0x0FFF; idx++) {
@@ -44,29 +44,27 @@ void pal12l6_analyze(void) {
 
         print_pinstat(idx, read_2, floating);
     }
+
+    uart_puts(".e\n");
 }
 
 static void print_pinstat(uint16_t idx, uint8_t input, uint8_t floating) {
     memset(str_buf, 0, STR_BUF_SIZE);
 
     char *str_ptr = str_buf;
+    // Print the inputs
     for(uint8_t i = 0; i < 12; i++) {
         *str_ptr = ((idx >> i) & 0x01) ? '1' : '0';
         str_ptr++;
-        *str_ptr = ' ';
-        str_ptr++;
     }
 
-    *str_ptr = '|';
-    str_ptr++;
     *str_ptr = ' ';
     str_ptr++;
 
+    // Print the outputs
     for(uint8_t i = 0; i < 6; i++) {
-        if((floating >> i) & 0x01) *str_ptr = 'x'; // Pin is floating... shouldn't happen here, probably broken
+        if((floating >> i) & 0x01) *str_ptr = '-'; // Pin is floating... shouldn't happen here, probably broken
         else *str_ptr = ((input >> i) & 0x01) ? '1' : '0';
-        str_ptr++;
-        *str_ptr = ' ';
         str_ptr++;
     } 
 
