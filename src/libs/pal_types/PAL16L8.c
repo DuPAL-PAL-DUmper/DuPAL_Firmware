@@ -15,17 +15,7 @@ static uint8_t detect_inputs(void);
 static void print_6io_conf(uint8_t inputs);
 static void print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol);
 
-static void pal16l8_analyze_internal(uint8_t dynamic_inputs);
-
 void pal16l8_analyze(void) {
-    pal16l8_analyze_internal(0);
-}
-
-void pal16l8_analyze_dyn(void) {
-    pal16l8_analyze_internal(1);
-}
-
-static void pal16l8_analyze_internal(uint8_t dynamic_inputs) {
     uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n");
 
     ioutils_setLED(1); // Turn the LED on
@@ -81,28 +71,6 @@ static void pal16l8_analyze_internal(uint8_t dynamic_inputs) {
         ioutils_setLED(0);
 
         print_pinstat(idx, io_inputs, floating, read_2, ' ');
-
-        // If we get in here, we're in a situation where we found some IOs what we detected as outputs
-        // that have become high-impedence.
-        // In this case, they could be read as inputs and change the state of the other outputs,
-        // so we treat them as inputs and try to toggle all the combinations out of them to see if anything changes.
-        //
-        // Note that, according to an AMD datasheet, these pins can be used as input only if the output is always disabled!
-        if((floating & 0x3F) && dynamic_inputs) {
-            for(uint8_t io_idx = 0; io_idx < 0x3F; io_idx++) { // Try all the combinations of 6 bits
-                wdt_reset();
-
-                if((io_idx & floating) != io_idx) continue; // Skip this run, we would be toggling pins that we did not find floating
-                ioutils_write((((uint32_t)(io_idx & 0x3F)) << 10) | idx); // Toggle them, by writing the current indices plus the combination of IO pins we found floating
-                read_1 = io_read(); // Read the result
-
-                // Print what we read, but make sure to
-                // 1. Update the index with the current combination of outputs
-                // 2. Update the input list by adding the floating IOs we're toggling
-                // 3. Remove from the floating list the ones we're toggling
-                print_pinstat(((((uint32_t)(io_idx & 0x3F)) << 10) | idx), (io_inputs | (floating & 0x3F)), (floating & 0xC0), read_1, '<');
-            }
-        }
     }
 }
 
