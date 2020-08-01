@@ -13,7 +13,12 @@
 
 static uint8_t detect_inputs(void);
 static void print_6io_conf(uint8_t inputs);
-static void print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol);
+static void print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status);
+
+static uint8_t calculate_totInputs(uint8_t io_mask);
+static uint8_t calculate_totOutputs(uint8_t io_mask);
+static void print_ioINLabels(uint8_t io_mask);
+static void print_ioOUTLabels(uint8_t io_mask);
 
 void pal16l8_analyze(void) {
     uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n");
@@ -42,10 +47,11 @@ void pal16l8_analyze(void) {
         wdt_reset();
     }
 
-    uart_puts("           INPUTS               |     OUTPUTS    \n");
-    uart_puts("0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1\n");
-    uart_puts("1 2 3 4 5 6 7 8 9 1 8 7 6 5 4 3 | 8 7 6 5 4 3 9 2\n");
-    uart_puts("-------------------------------------------------\n");
+    sprintf(str_buf, ".i %u\n", calculate_totInputs(io_inputs)); uart_puts(str_buf);
+    sprintf(str_buf, ".o %u\n", calculate_totOutputs(io_inputs)*2); uart_puts(str_buf); // We have both the outputs and the "output enable" pin
+    print_ioINLabels(io_inputs);
+    print_ioOUTLabels(io_inputs);
+    uart_puts("\n");
 
     uint8_t read_1, read_2, floating;
     // At worst, if all the IOs are set as inputs, we'll have to try 65536 combinations!
@@ -70,8 +76,60 @@ void pal16l8_analyze(void) {
 
         ioutils_setLED(0);
 
-        print_pinstat(idx, io_inputs, floating, read_2, ' ');
+        print_pinstat(idx, io_inputs, floating, read_2);
     }
+
+    uart_puts(".e\n");
+}
+
+static void print_ioOUTLabels(uint8_t io_mask) {
+    io_mask = ~io_mask & 0x3F;
+    uart_puts(".ob ");
+    for(uint8_t idx = 0; idx < 6; idx++) {
+        if((io_mask >> idx) & 0x01) {
+            sprintf(str_buf, "io%u ", 18 - idx);
+            uart_puts(str_buf);
+        }
+    }
+
+    uart_puts("o19 o12 ");
+    for(uint8_t idx = 0; idx < 6; idx++) {
+        if((io_mask >> idx) & 0x01) {
+            sprintf(str_buf, "io%uoe ", 18 - idx);
+            uart_puts(str_buf);
+        }
+    }
+
+    uart_puts("o19oe o12oe \n");
+}
+
+static void print_ioINLabels(uint8_t io_mask) {
+    uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i11 ");
+    for(uint8_t idx = 0; idx < 6; idx++) {
+        if((io_mask >> idx) & 0x01) {
+            sprintf(str_buf, "io%u ", 18 - idx);
+            uart_puts(str_buf);
+        }
+    }
+
+    uart_puts("\n");
+}
+
+static uint8_t calculate_totInputs(uint8_t io_mask) {
+    uint8_t additional_inputs = 0;
+
+    for(uint8_t idx = 0; idx < 6; idx++) additional_inputs += ((io_mask >> idx) & 0x01);
+
+    return 10 + additional_inputs;
+}
+
+static uint8_t calculate_totOutputs(uint8_t io_mask) {
+    uint8_t additional_outputs = 0;
+
+    io_mask = ~io_mask & 0x3F;
+    for(uint8_t idx = 0; idx < 6; idx++) additional_outputs += ((io_mask >> idx) & 0x01);
+
+    return 2 + additional_outputs;
 }
 
 static uint8_t detect_inputs(void) {
@@ -103,9 +161,9 @@ static void print_6io_conf(uint8_t inputs) {
     sprintf(str_buf, "Detected IO config:\n");
     uart_puts(str_buf);
     
-    uart_puts("IO1 IO2 IO3 IO4 IO5 IO6\n");
+    uart_puts("IO18 IO17 IO16 IO15 IO14 IO13\n");
     memset(str_buf, 0, STR_BUF_SIZE);
-    sprintf(str_buf, " %c   %c   %c   %c   %c   %c\n\n", 
+    sprintf(str_buf, " %c    %c    %c    %c    %c    %c\n\n", 
     ((inputs >> 0) & 0x01) ? 'I' : 'O',
     ((inputs >> 1) & 0x01) ? 'I' : 'O',
     ((inputs >> 2) & 0x01) ? 'I' : 'O',
@@ -115,56 +173,57 @@ static void print_6io_conf(uint8_t inputs) {
     uart_puts(str_buf);
 }
 
-static void print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status, char special_symbol) {
+static void print_pinstat(uint16_t idx, uint8_t inputs, uint8_t floating, uint8_t out_status) {
     memset(str_buf, 0, STR_BUF_SIZE);
 
     char *str_ptr = str_buf;
+    // Print the inputs
     for(uint8_t i = 0; i < 10; i++) {
         *str_ptr = ((idx >> i) & 0x01) ? '1' : '0';
         str_ptr++;
-        *str_ptr = ' ';
-        str_ptr++;
     }
 
+    // Print IOs as inputs
     for(uint8_t i = 0; i < 6; i++) {
-        if(((inputs >> i) & 0x01)) *str_ptr = ((idx >> (10+i)) & 0x01) ? '1' : '0';
-        else *str_ptr = '.';
-
-        str_ptr++;
-        *str_ptr = ' ';
-        str_ptr++;
+        if(((inputs >> i) & 0x01)) {
+            *str_ptr = ((idx >> (10+i)) & 0x01) ? '1' : '0';
+            str_ptr++;
+        }
     }
 
-    *str_ptr = '|';
-    str_ptr++;
     *str_ptr = ' ';
     str_ptr++;
 
+    // Print IO as outputs
     for(uint8_t i = 0; i < 6; i++) {
-        if((floating >> i) & 0x01) *str_ptr = 'x'; // Check that this output is not in high impedence mode
-        else if(!(inputs >> i & 0x01)) *str_ptr = ((out_status >> i) & 0x01) ? '1' : '0';
-        else *str_ptr = '.';
-        str_ptr++;
-        *str_ptr = ' ';
-        str_ptr++;
+        if((floating >> i) & 0x01) { *str_ptr = '-'; str_ptr++; } // Check that this output is not in high impedence mode
+        else if(!(inputs >> i & 0x01)) { *str_ptr = ((out_status >> i) & 0x01) ? '1' : '0';  str_ptr++; };
     }
 
-    // Pin 19
-    if(floating & 0x40) *str_ptr = 'x';
+    // Pin 19 - output
+    if(floating & 0x40) *str_ptr = '-';
     else *str_ptr = ((out_status >> 6) & 0x01) ? '1' : '0';
     str_ptr++;
-    *str_ptr = ' ';
-    str_ptr++;
 
-    // Pin 12
-    if(floating & 0x80) *str_ptr = 'x';
+    // Pin 12 - output
+    if(floating & 0x80) *str_ptr = '-';
     else *str_ptr = ((out_status >> 7) & 0x01) ? '1' : '0';
     str_ptr++;
-
-    // Print the special symbol
-    *str_ptr = ' ';
+    
+    // Print IO high impedence
+    for(uint8_t i = 0; i < 6; i++) {
+        if((floating >> i) & 0x01) { *str_ptr = '0'; str_ptr++; } // Check that this output is not in high impedence mode
+        else if(!(inputs >> i & 0x01)) { *str_ptr = '1';  str_ptr++; };
+    }
+    
+    // Pin 19 - high impedence
+    if(floating & 0x40) *str_ptr = '0';
+    else *str_ptr = '1';
     str_ptr++;
-    *str_ptr = special_symbol;
+    
+    // Pin 12 - high impedence
+    if(floating & 0x80) *str_ptr = '0';
+    else *str_ptr = '1';
     str_ptr++;
 
     *str_ptr = '\n';
