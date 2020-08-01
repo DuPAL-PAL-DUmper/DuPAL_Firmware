@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define MARKER_STRING "----CUT_HERE----\n"
+
 #define STR_BUF_SIZE 128
 char str_buf[STR_BUF_SIZE];
 

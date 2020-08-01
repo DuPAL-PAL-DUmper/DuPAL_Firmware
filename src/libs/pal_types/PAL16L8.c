@@ -47,6 +47,7 @@ void pal16l8_analyze(void) {
         wdt_reset();
     }
 
+    uart_puts(MARKER_STRING);
     sprintf(str_buf, ".i %u\n", calculate_totInputs(io_inputs)); uart_puts(str_buf);
     sprintf(str_buf, ".o %u\n", calculate_totOutputs(io_inputs)*2); uart_puts(str_buf); // We have both the outputs and the "output enable" pin
     print_ioINLabels(io_inputs);
@@ -80,6 +81,7 @@ void pal16l8_analyze(void) {
     }
 
     uart_puts(".e\n");
+    uart_puts(MARKER_STRING);
 }
 
 static void print_ioOUTLabels(uint8_t io_mask) {

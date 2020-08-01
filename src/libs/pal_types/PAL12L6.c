@@ -17,6 +17,7 @@ void pal12l6_analyze(void) {
 
     ioutils_setLED(1); // Turn the LED on
 
+    uart_puts(MARKER_STRING);
     uart_puts(".i 12\n");
     uart_puts(".o 6\n");
     uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i11 i12 i19\n");
@@ -46,6 +47,7 @@ void pal12l6_analyze(void) {
     }
 
     uart_puts(".e\n");
+    uart_puts(MARKER_STRING);
 }
 
 static void print_pinstat(uint16_t idx, uint8_t input, uint8_t floating) {
