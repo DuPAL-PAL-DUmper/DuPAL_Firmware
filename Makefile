@@ -35,7 +35,7 @@ MCU = atmega328p
 #     processor frequency. You can then use this symbol in your source code to 
 #     calculate timings. Do NOT tack on a 'UL' at the end, this will be done
 #     automatically to create a 32-bit value in your source code.
-F_CPU = 6000000
+F_CPU = 20000000
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
@@ -208,7 +208,7 @@ AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 #AVRDUDE_VERBOSE = -v -v
 
 AVRDUDE_PORT=/dev/ttyUSB0
-AVRDUDE_BITRATE=19200
+AVRDUDE_BITRATE=38400
 #AVRDUDE_PORT=usb
 AVRDUDE_FLAGS = -p m328p -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER) -B2 -b $(AVRDUDE_BITRATE)
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
