@@ -72,4 +72,13 @@ You can then feed the table into it like this:
 ```
 espresso -Dexact -oeqntott /path/to/table.tbl
 ```
+or
+```
+espresso -Dopo -oeqntott /path/to/table.tbl
+```
+##### Notes about Output Phase Optimization
+If you minimize using the `opo` parameter, remember to also execute `espresso` without the `eqntott` output, so you can check which phase was used to minimize the equations.
+A number `0` means that the equation for output was inverted, an `1` means that the function was not inverted. 
+If it was inverted, remember to put a **NOT** in front of it to obtain the same results as before.
+
 And get back your equations.
