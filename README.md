@@ -68,3 +68,8 @@ It's important to note that when testing an input combination, we can read the o
 
 #### Output format
 Output format for the analisys is the standard `espresso` format.
+You can then feed the table into it like this:
+```
+espresso -Dexact -oeqntott /path/to/table.tbl
+```
+And get back your equations.
