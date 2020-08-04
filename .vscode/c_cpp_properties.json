@@ -5,9 +5,11 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/lib/avr/include/**",
-                "/usr/lib/avr/include"
+                "/usr/lib/avr/include",
+                "/usr/avr/include/**",
+                "/usr/avr/include"
             ],
-            "defines": ["F_CPU=8000000", "__AVR_ATmega328P__"],
+            "defines": ["F_CPU=20000000", "__AVR_ATmega328P__"],
             "compilerPath": "/usr/bin/avr-gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",
