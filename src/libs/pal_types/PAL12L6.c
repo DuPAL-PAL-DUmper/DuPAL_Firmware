@@ -22,6 +22,7 @@ void pal12l6_analyze(void) {
     uart_puts(".o 6\n");
     uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i11 i12 i19\n");
     uart_puts(".ob o18 o17 o16 o15 o14 o13\n");
+    uart_puts(".phase 000000\n");
 
     uint8_t read_1, read_2, floating;
     for(uint32_t idx = 0; idx <= 0x0FFF; idx++) {

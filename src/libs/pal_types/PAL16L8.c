@@ -19,6 +19,7 @@ static uint8_t calculate_totInputs(uint8_t io_mask);
 static uint8_t calculate_totOutputs(uint8_t io_mask);
 static void print_ioINLabels(uint8_t io_mask);
 static void print_ioOUTLabels(uint8_t io_mask);
+static void print_ioPhase(uint8_t totOuts);
 
 void pal16l8_analyze(void) {
     uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n");
@@ -52,6 +53,7 @@ void pal16l8_analyze(void) {
     sprintf(str_buf, ".o %u\n", calculate_totOutputs(io_inputs)*2); uart_puts(str_buf); // We have both the outputs and the "output enable" pin
     print_ioINLabels(io_inputs);
     print_ioOUTLabels(io_inputs);
+    print_ioPhase(calculate_totOutputs(io_inputs));
     uart_puts("\n");
 
     uint8_t read_1, read_2, floating;
@@ -103,6 +105,13 @@ static void print_ioOUTLabels(uint8_t io_mask) {
     }
 
     uart_puts("o19oe o12oe \n");
+}
+
+static void print_ioPhase(uint8_t totOuts) {
+    uart_puts(".phase ");
+    for(uint8_t idx = 0; idx < totOuts; idx++) uart_puts("0"); // The outputs
+    for(uint8_t idx = 0; idx < totOuts; idx++) uart_puts("1"); // And the OEs
+    uart_puts("\n");
 }
 
 static void print_ioINLabels(uint8_t io_mask) {
