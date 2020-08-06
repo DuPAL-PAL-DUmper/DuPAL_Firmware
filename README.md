@@ -74,7 +74,7 @@ espresso -Dexact -oeqntott /path/to/table.tbl
 ```
 or
 ```
-espresso -Dopo /path/to/table.tbl | espresso -oeqntott /path/to/table.tbl
+espresso -Dexact -epos /path/to/table.tbl | espresso -oeqntott /path/to/table.tbl
 ```
 ##### Notes about Output Phase Optimization
 If you minimize using the `opo` parameter, remember to check for the phase parameter.
