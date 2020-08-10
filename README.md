@@ -67,10 +67,10 @@ Once which pins are inputs or outputs is known, we can then proceed to try every
 It's important to note that when testing an input combination, we can read the output pins between 13 and 18 (minus those that are found as inputs, of course) directly, but outputs on 12 and 19 require that we toggle the MCU output connected to them high/low and check that the output is not in hi-Z mode.
 
 #### Output format
-Output format for the analisys is the standard `espresso` format.
+Output format for the analisys is the standard **espresso** format.
 You can then feed the table into it like this:
 ```
-espresso -Dexact -oeqntott /path/to/table.tbl
+espresso -Dexact -epos -oeqntott /path/to/table.tbl
 ```
 or
 ```
