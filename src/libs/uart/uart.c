@@ -1,3 +1,9 @@
+/* 
+ * Took some code from here:
+ * https://web.archive.org/web/20170607120812/http://www.cs.mun.ca/~rod/Winter2007/4723/notes/serial/serial.html
+ *
+ */
+
 #include <avr/io.h>
 #include <stdio.h>
 
@@ -6,8 +12,6 @@
 #endif
 
 #include <util/setbaud.h>
-
-/* http://www.cs.mun.ca/~rod/Winter2007/4723/notes/serial/serial.html */
 
 #include "common/defines.h"
 
