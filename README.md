@@ -4,11 +4,101 @@
 
 PAL is an acronym which means *Programmable Array Logic*, that is, these ICs are a family of programmable logic devices that can act as (and replace) a bunch of simpler logic devices, saving space on the PCB, costs... and providing a way to hinder unauthorized design copying by competitors.
 
-Most of the PAL ICs in the devices floating around are read-protected: this means that you cannot ask the device to read its content, leaving only bruteforce as a way to recover the programming.
+Most of the PAL ICs in the devices floating around are read-protected: this means that you cannot ask the device to read its content, leaving only bruteforce and black-box analisys as a way to recover the programming.
 
-### Supported PAL devices
+The DuPAL (**Du**mper of **PAL**s) is a set of software and hardware instruments that I developed to help me bruteforcing and analyzing these ICs, with the objective of eventually being able to dump and save all the ones in the old circuit boards I have around.
 
-#### PAL10L8
+### Connecting to the DuPAL
+
+The DuPAL uses an RS232 connection with the following parameters:
+
+- Speed 57600bps
+- 8 data bits
+- No parity
+- 1 stop bit
+- No flow control
+
+You can use any terminal emulator with basic VT100 support.
+For, example, you can use `microcom`:
+
+```shell
+$ microcom -s 57600 -p /dev/ttyUSB0
+connected to /dev/ttyUSB0
+Escape character: Ctrl-\
+Type the escape character to get to the prompt.
+
+DuPAL - 0.0.8
+
+Select which PAL type to analyze:
+---------------------------------
+a) PAL16L8/PAL10L8
+b) PAL12L6
+x) Remote control
+Press the corresponding letter to start analisys.
+```
+
+Once connected via the serial port, the board will restart automatically and present the user a menu.
+
+### Operating modes
+
+The DuPAL firmware has two operating modes, that can be selected via the menu presented after connecting via terminal.
+
+#### Standalone mode
+
+The **standalone mode** is the easiest to use but also the most limited mode: it's sufficient to select the type of PAL that was previously inserted in the board (**TURN THE POWER OFF FIRST!**) and the board will perform the correct analisys for the selected type of chip. The drawback is that only purely combinatorial PAL devices are supported.
+
+Once the analisys start, a truth table in a format compatible with **espresso** will be printed out.
+
+This table can be used to get minimized equations. You can refer to the documentation in the **DuPAL Analyzer** repository for further details on minimization and feedback outputs.
+
+##### Feeding the truth table to espresso
+
+To capture the truth table that the DuPAL generates, we need to record the output coming from the serial port:
+
+```shell
+$ microcom -s 57600 -p /dev/ttyUSB0 | tee ~/output.tbl
+connected to /dev/ttyUSB0
+Escape character: Ctrl-\
+Type the escape character to get to the prompt.
+
+DuPAL - 0.0.8
+
+Select which PAL type to analyze:
+---------------------------------
+a) PAL16L8/PAL10L8
+b) PAL12L6
+x) Remote control
+Press the corresponding letter to start analisys.
+
+-[ PAL12L6 analyzer ]-
+
+----CUT_HERE----
+.i 12
+.o 6
+.ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i11 i12 i19
+.ob o18 o17 o16 o15 o14 o13
+.phase 000000
+000000000000 000000
+100000000000 000100
+010000000000 000000
+...
+101111111111 110000
+011111111111 100010
+111111111111 111111
+.e
+----CUT_HERE----
+Analisys complete.
+```
+
+We can then copy all the text between the two `----CUT_HERE----` headers and feed it to espresso to obtain our equations:
+
+```shell
+espresso -Dexact -epos -oeqntott ~/output_clean.tbl
+```
+
+##### Supported PALs in standalone mode
+
+###### PAL10L8
 
 The **PAL10L8** has:
 
@@ -18,7 +108,7 @@ The **PAL10L8** has:
 This device has no tri-state outputs and no registered outputs. Bruteforcing is a simple matter of trying all the combinations.
 The analisys logic is a subset of the **PAL16L8** below.
 
-#### PAL16L8
+###### PAL16L8
 
 The **PAL16L8** has:
 
@@ -28,23 +118,37 @@ The **PAL16L8** has:
 
 Having no registered outputs means that this device has no memory of previous states, so it can be bruteforced with relative ease.
 
-If we're working with a PAL in a known circuit, we can infer which pins are inputs and outputs by looking at the schematics, but if we're working with a PAL placed in a circuit of which we know nothing, we need to find a way to identify which pin is which type.
-
-#### PAL12L6
+###### PAL12L6
 
 The **PAL12L6** has:
 
 - 12 input pins (1-9, 11, 12, 19)
 - 6 output pins (13-18)
 
-Having no registered or open collector outputs means that bruteforcing is just a matter of trying all inputs.
+Having no registered or open collector outputs means that bruteforcing is just a matter of trying all input combinations.
 
-### How to discriminate between input, output and tri-state
+#### Remote Control mode
 
-We can connect unknown pins from the PAL to two pins from our MCU:
+Entering **Remote Control** mode puts the board in a state where it waits commands from the host.
+
+The commands are in ASCII format and can be input by hand, but the mode is meant to be leveraged by an external application that can pilot the board to perform advanced analisys on the device.
+
+A client for this mode is the **DuPAL Analyzer**, which has support for some registered (stateful) PAL devices.
+
+##### Remote Control protocol
+
+**TODO**
+
+## Hardware notes
+
+### Recognizing three-state outputs
+
+To recognize wether a pin is an input, an output, or an output in hi-z mode, the DuPAL uses the following method:
+
+Every possible output is connected to the MCU by using two pins:
 
 - One connection will be direct, and will be to an *input* of our microcontroller
-- The second connection will be through a resistor of relatively high value (e.g. 10k) to an output pin of our microcontroller
+- The second connection will be through a resistor of relatively high value (e.g. 10k) to an *output* pin of our microcontroller
 
 ```text
     PAL                             MCU
@@ -54,51 +158,24 @@ Unknown PIN  |-----o--/\/\/\---| Output PIN
              |     `-----------| Input PIN
 ```
 
-The procedure will then be the following
+The board will then do the following:
 
 1. Set the **MCU output** as **high**
-2. Read the **MCU input** 
-    - If it is **low**, then the **PAL pin** is an **output**
+2. Read the **MCU input**
+    - If it is **low**, then the **PAL pin** is an **output** (because it's in a different state than what we're pulling it to be)
     - If it is **high**, go on with the test
 3. Set the **MCU output** as **low**
 4. Read the **MCU input**
     - If it is **high**, then the **PAL pin** is an **output**
-    - Otherwise, the **PAL pin** is either an **input** or in **hi-Z** (see below)
+    - Otherwise, the **PAL pin** is either an **input** or an output in **hi-Z** (see below)
 
-Whether a pin is in tri-state or an input produces the same result with this method, we know that pin 12 and 19 can be output only and support tri-state, so those pins will always be of **output** type.
-For every other IO pin, we'll go through the 1024 combinations of the input pins (remember we have 10 input pins) and record which of the IO pins is consistently in hi-z state. We'll mark these pins as **input**.
+Whether a pin is in tri-state or an input produces the same result with this method. In some models, we know that some pins can only be three-state outputs and can never be input: those are easy to discriminate.
 
-This must be done for every unknown pin (and to test whether the outputs in 12 or 19 are hi-Z). And for pins 13 to 18 this must be done prior starting the bruteforcing.
+For every other IO pin, we'll go through the combinations of the input pins and record which of the IO pins is consistently in hi-z state. We'll mark these pins as **input**.
+
+This must be done for every unknown pin.
 
 #### Why it works
 
 The resistor will avoid a short-circuit in case the PAL pin is an output, and it will also make the MCU output drive weak enough to not be able to change the state of said PAL output, but still strong enough to change the state in case the pin is an input (or an output in hi-Z mode).
 In short, the resistor will make the outputs act a dynamic pull-ups/downs.
-
-### How to bruteforce the content
-
-Once which pins are inputs or outputs is known, we can then proceed to try every input combination and record the output.
-It's important to note that when testing an input combination, we can read the output pins between 13 and 18 (minus those that are found as inputs, of course) directly, but outputs on 12 and 19 require that we toggle the MCU output connected to them high/low and check that the output is not in hi-Z mode.
-
-#### Output format
-
-Output format for the analisys is the standard **espresso** format.
-You can then feed the table into it like this:
-
-```shell
-espresso -Dexact -epos -oeqntott /path/to/table.tbl
-```
-
-or
-
-```shell
-espresso -Dexact -epos /path/to/table.tbl | espresso -oeqntott /path/to/table.tbl
-```
-
-##### Notes about Output Phase Optimization
-
-If you minimize using the `opo` parameter, remember to check for the phase parameter.
-A number `0` means that the equation for output was inverted, an `1` means that the function was not inverted. 
-If it was inverted, remember to put a **NOT** in front of it to obtain the same results as before.
-
-And get back your equations.
