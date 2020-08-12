@@ -137,7 +137,7 @@ A client for this mode is the **DuPAL Analyzer**, which has support for some reg
 
 ##### Remote Control protocol
 
-**TODO**
+TODO
 
 ## Hardware notes
 
