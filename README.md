@@ -131,13 +131,76 @@ Having no registered or open collector outputs means that bruteforcing is just a
 
 Entering **Remote Control** mode puts the board in a state where it waits commands from the host.
 
-The commands are in ASCII format and can be input by hand, but the mode is meant to be leveraged by an external application that can pilot the board to perform advanced analisys on the device.
+The commands are in ASCII format and can be input by hand, but the mode is meant to be leveraged by an external application that can pilot the board to perform advanced analisys.
 
 A client for this mode is the **DuPAL Analyzer**, which has support for some registered (stateful) PAL devices.
 
 ##### Remote Control protocol
 
-TODO
+The **Remote Control** protocol is pretty simple and ASCII based. It supports 4 commands, each with its own syntax and response.
+
+A string `CMD_ERR` will be sent in case the command is not recognized.
+
+###### Write
+
+- Syntax: `>W xxxxxxxx<`
+- Response: `[W xxxxxxxx]`
+
+Where `xxxxxxxx` is the hex representation of the status to apply to the following pins, from MSB to LSB:
+
+```text
+  31   30   29   28   27   26   25   24
+.----.----.----.----.----.----.----.----.
+| xx | xx | xx | xx | xx | xx | xx | xx | Byte 3
+'----'----'----'----'----'----'----'----'
+
+  23   22   21   20   19   18   17   16
+.----.----.----.----.----.----.----.----.
+| xx | xx | xx | xx | xx | xx | 12 | 19 | Byte 2
+'----'----'----'----'----'----'----'----'
+
+  15   14   13   12   11   10    9    8
+.----.----.----.----.----.----.----.----.
+| 13 | 14 | 15 | 16 | 17 | 18 | 11 |  9 | Byte 1
+'----'----'----'----'----'----'----'----'
+
+   7    6    5    4    3    2    1    0
+.----.----.----.----.----.----.----.----.
+|  8 |  7 |  6 |  5 |  4 |  3 |  2 |  1 | Byte 0
+'----'----'----'----'----'----'----'----'
+```
+
+Pins 12 through 19 are connected to the MCU via a 10k resistor.
+
+The response repeats the same mask that was written, to make sure the board got the command correctly and set the correct pins.
+
+###### Read
+
+- Syntax: `>R<`
+- Response: `[R xx]`
+
+Where `xx` is the hex representation of the status of the following pins, from MSB to LSB:
+
+```text
+   7    6    5    4    3    2    1    0
+.----.----.----.----.----.----.----.----.
+| 12 | 19 | 13 | 14 | 15 | 16 | 17 | 18 |
+'----'----'----'----'----'----'----'----'
+```
+
+###### Reset
+
+- Syntax: `>L<`
+- Response: N/A
+
+This command will force a reset by watchdog of the DuPAL board.
+
+###### Exit
+
+- Syntax: `>X<`
+- Response: N/A
+
+This command is pretty useless for now, all it does is exiting from the Remote Control mode and leave the board waiting for another serial connection or a reset.
 
 ## Hardware notes
 
