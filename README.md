@@ -93,7 +93,7 @@ Analisys complete.
 We can then copy all the text between the two `----CUT_HERE----` headers and feed it to espresso to obtain our equations:
 
 ```shell
-espresso -Dexact -epos -oeqntott ~/output_clean.tbl
+espresso -Dexact -oeqntott ~/output_clean.tbl
 ```
 
 ##### Supported PALs in standalone mode
