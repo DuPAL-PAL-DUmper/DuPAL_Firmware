@@ -8,6 +8,30 @@ Most of the PAL ICs in the devices floating around are read-protected: this mean
 
 The DuPAL (**Du**mper of **PAL**s) is a set of software and hardware instruments that I developed to help me bruteforcing and analyzing these ICs, with the objective of eventually being able to dump and save all the ones in the old circuit boards I have around.
 
+### Building
+
+Building was tested on *Debian 10* and *Fedora 32*.
+
+Once the required dependecies are installed, it should be sufficient to type `make` to start the compilation, and `make program` to update the board (this requires optiboot bootloader already flashed on the chip).
+
+Edit the `Makefile` to change the default serial port for flashing (default `/dev/ttyUSB0`).
+
+#### Debian 10 packages
+
+Install the AVR development packages:
+
+```shell
+sudo apt install avrdude avr-libc binutils-avr gcc-avr
+```
+
+#### Fedora 32 packages
+
+Install the following packages:
+
+```shell
+sudo dnf install avr-binutils avr-gcc avr-libc avrdude
+```
+
 ### Connecting to the DuPAL
 
 The DuPAL uses an RS232 connection with the following parameters:
