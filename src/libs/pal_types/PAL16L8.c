@@ -7,7 +7,6 @@
 #include <util/delay.h>
 
 #include <uart/uart.h>
-#include <ioutils/mcu_io.h>
 #include <ioutils/ioutils.h>
 #include <utils/strutils.h>
 
@@ -67,13 +66,13 @@ void pal16l8_analyze(void) {
         // First, try to force the the IOs and outputs to low
         ioutils_write(idx);
         _delay_us(50);
-        read_1 = io_read();
+        read_1 = ioutils_read();
 
         // Then try to force them to high
         // We will also try to force the pins that we did not detect as input in the beginning
         ioutils_write(0x030000 | (((uint32_t)(~io_inputs & 0x3F)) << 10) | idx);
         _delay_us(50);
-        read_2 = io_read();
+        read_2 = ioutils_read();
 
         floating = (read_1 ^ read_2);
 
@@ -152,10 +151,10 @@ static uint8_t detect_inputs(void) {
     for(uint16_t idx = 0; idx < 0x3FF; idx++) {
         ioutils_write(idx); // Zero the potential outputs
         _delay_us(50);
-        read1 = io_read();
+        read1 = ioutils_read();
         ioutils_write(0xFC00 | idx); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
         _delay_us(50);
-        read2 = io_read();
+        read2 = ioutils_read();
 
         inputs &= ((read1 ^ read2) & 0x3F);
 

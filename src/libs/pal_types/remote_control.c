@@ -8,7 +8,6 @@
 #include <uart/uart.h>
 #include <utils/strutils.h>
 #include <ioutils/ioutils.h>
-#include <ioutils/mcu_io.h>
 
 #define PKT_BUFFER_SIZE 32
 #define PKT_START '>'
@@ -54,7 +53,7 @@ void remote_control_analyze(void) {
                     pkt_buffer[0] = RESP_START;
                     pkt_buffer[1] = CMD_READ;
                     pkt_buffer[2] = ' ';
-                    strutils_u8_to_str(&pkt_buffer[3], io_read());
+                    strutils_u8_to_str(&pkt_buffer[3], ioutils_read());
                     pkt_buffer[5] = RESP_END;
                     pkt_buffer[6] = '\n';
                     pkt_buffer[7] = 0;

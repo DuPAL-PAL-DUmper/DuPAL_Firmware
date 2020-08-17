@@ -6,7 +6,6 @@
 #include <util/delay.h>
 
 #include <uart/uart.h>
-#include <ioutils/mcu_io.h>
 #include <ioutils/ioutils.h>
 #include <utils/strutils.h>
 
@@ -33,12 +32,12 @@ void pal12l6_analyze(void) {
         uint32_t comp_idx = (idx & 0x3FF) | ((uint32_t)(idx & 0x0C00) << 6); // Set the address and pull the outputs low
         ioutils_write(comp_idx);
         _delay_us(50);
-        read_1 = io_read() & 0x3F;
+        read_1 = ioutils_read() & 0x3F;
 
         comp_idx = (idx & 0x3FF) | ((uint32_t)(idx & 0x0C00) << 6) | 0xFC00; // Same address with the outputs high
         ioutils_write(comp_idx);
         _delay_us(50);
-        read_2 = io_read() & 0x3F;
+        read_2 = ioutils_read() & 0x3F;
 
         floating = ((read_1 ^ read_2) & 0x3F);
 

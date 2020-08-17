@@ -27,6 +27,12 @@
  */
 void ioutils_write(uint32_t val);
 
+/*
+ * This will return a byte that contains the status of the PAL pins, from MSB to LSB 
+ * 12, 19, 13, 14, 15, 16, 17, 18
+ */
+uint8_t ioutils_read(void);
+
 void ioutils_setLED(uint8_t status);
 
 #endif /* _IOUTILS_H_ */

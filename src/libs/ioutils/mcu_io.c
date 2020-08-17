@@ -25,13 +25,3 @@ void io_init() {
     PORTC |= (_BV(2) | _BV(3)); // Enable PC2-5 internal pull-ups
     PORTD |= _BV(7); // Enable PD7 internal pull-up
 }
-
-uint8_t io_read(void) {
-    return ((PINC & (_BV(2) | _BV(3) | _BV(4) | _BV(5))) >> 2) |
-            ((PIND & (_BV(2) | _BV(3) | _BV(4) | _BV(5))) << 2);
-}
-
-void io_write(uint8_t val) {
-    PORTD = (PORTD & ~(_BV(6) | _BV(7))) | (val & 0x03) << 6; 
-}
-

@@ -67,16 +67,4 @@
 
 void io_init(void);
 
-/*
- * This will return a byte that contains the status of the PAL pins, from MSB to LSB 
- * 12, 19, 13, 14, 15, 16, 17, 18
- */
-uint8_t io_read(void);
-
-/*
- * Write the two pins directly connected to the MCU, from MSB to LSB
- * 12, 19
- */
-void io_write(uint8_t val);
-
 #endif /* _MCU_IO_H_ */
