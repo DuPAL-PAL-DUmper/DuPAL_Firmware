@@ -35,29 +35,29 @@
 #define ACT_LEDPORT	 PORTB
 #define ACT_LEDPIN   PINB
 #define ACT_LEDDDR   DDRB
-#define ACT_LED_P    5 // PB5
+#define ACT_LED_P    5 // PB5 (out)
 
 #define SOCK_LEDPORT PORTC
 #define SOCK_LEDPINC PINC
 #define SOCK_LEDDDR  DDRC
-#define SOCK_LED_P1  4 // PC5 (20-pin PAL)
-#define SOCK_LED_P2  5 // PC6 (24-pin PAL)
+#define SOCK_LED_P1  4 // PC5 (20-pin PAL, out)
+#define SOCK_LED_P2  5 // PC6 (24-pin PAL, out)
 
 #define PISO_PORT  PORTD
 #define PISO_PIN   PIND
 #define PISO_DDR   DDRD
-#define PISO_CLR   2 // PD2
-#define PISO_SH    3 // PD3
-#define PISO_INH   4 // PD4
-#define PISO_CLK   5 // PD5
-#define PISO_SER   6 // PD6
+#define PISO_CLR   2 // PD2 (out)
+#define PISO_SH    3 // PD3 (out)
+#define PISO_INH   4 // PD4 (out)
+#define PISO_CLK   5 // PD5 (out)
+#define PISO_SER   6 // PD6 (in)
 
 #define SIPO_PORT_1 PORTB
 #define SIPO_PIN_1  PINB
 #define SIPO_DDR_1  DDRB
-#define SIPO_1_SER  0 // PB0
-#define SIPO_1_CLK  1 // PB1
-#define SIPO_1_RST  2 // PB2
+#define SIPO_1_SER  0 // PB0 (out)
+#define SIPO_1_CLK  1 // PB1 (out)
+#define SIPO_1_RST  2 // PB2 (out)
 
 #define SIPO_PORT_2 PORTC
 #define SIPO_PIN_2  PINC
