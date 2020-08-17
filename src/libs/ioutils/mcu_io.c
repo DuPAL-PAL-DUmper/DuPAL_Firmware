@@ -12,16 +12,18 @@ void io_init() {
     // Config the SIPO shifter ports
     SIPO_DDR_1 |= (_BV(SIPO_1_SER) | _BV(SIPO_1_CLK) | _BV(SIPO_1_RST)); // Configure these pins as output
     SIPO_DDR_2 |= (_BV(SIPO_2_RCLK) | _BV(SIPO_2_OE));
+    
 
     // Config the PISO shifter ports
-    // TODO
+    PISO_DDR |= (_BV(PISO_CLK) | _BV(PISO_CLR) | _BV(PISO_INH) | _BV(PISO_SH)); // Outputs
+    PISO_DDR  &= ~_BV(PISO_SER); // Inputs
+    PISO_PORT &= ~_BV(PISO_SER); // Disable pullup on input
 
     // Set the other ports for PAL communication as IN or OUT
-    DDRC &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // PC2-5 as inputs
-    DDRD &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // PD2-5 as inputs
-    PORTC &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // Disable PC2-5 internal pull-ups
-    PORTD &= ~(_BV(2) | _BV(3) | _BV(4) | _BV(5)); // Disable PD2-5 internal pull-ups
-    DDRD |= (_BV(6) | _BV(7)); // PD6,7 as outputs
+    DDRC &= ~(_BV(2) | _BV(3)); // PC2,3 as inputs
+    DDRD &= ~_BV(7); // PD7 as input
+    PORTC |= (_BV(2) | _BV(3)); // Enable PC2-5 internal pull-ups
+    PORTD |= _BV(7); // Enable PD7 internal pull-up
 }
 
 uint8_t io_read(void) {
