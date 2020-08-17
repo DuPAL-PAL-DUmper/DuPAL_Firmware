@@ -33,7 +33,7 @@ void remote_control_analyze(void) {
 
     while(1) {
         if(receive_pkt()) {
-            ioutils_setLED(1);
+            ioutils_setLED(ACT_LED, 1);
 
             switch(pkt_buffer[0]) {
                 case CMD_WRITE: {
@@ -69,7 +69,7 @@ void remote_control_analyze(void) {
                     break;
             }
 
-            ioutils_setLED(0);
+            ioutils_setLED(ACT_LED, 0);
         }
 
         wdt_reset();

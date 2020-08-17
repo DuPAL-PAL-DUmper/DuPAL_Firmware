@@ -23,7 +23,7 @@ static void print_ioPhase(uint8_t totOuts);
 void pal16l8_analyze(void) {
     uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n");
 
-    ioutils_setLED(1); // Turn the LED on
+    ioutils_setLED(ACT_LED, 1); // Turn the LED on
 
     uart_puts("Detecting inputs...\n");
 
@@ -40,9 +40,9 @@ void pal16l8_analyze(void) {
 
     // Reset the watchdog and blink a bit
     for(uint8_t i = 0; i < 5; i++) {
-        ioutils_setLED(1);
+        ioutils_setLED(ACT_LED, 1);
         _delay_ms(500);
-        ioutils_setLED(0);
+        ioutils_setLED(ACT_LED, 0);
         _delay_ms(500);
         wdt_reset();
     }
@@ -62,7 +62,7 @@ void pal16l8_analyze(void) {
 
         if((idx >> 10) & (~io_inputs & 0x3F)) continue; // Skip this round
 
-        ioutils_setLED(1);
+        ioutils_setLED(ACT_LED, 1);
         // First, try to force the the IOs and outputs to low
         ioutils_write(idx);
         _delay_us(50);
@@ -76,7 +76,7 @@ void pal16l8_analyze(void) {
 
         floating = (read_1 ^ read_2);
 
-        ioutils_setLED(0);
+        ioutils_setLED(ACT_LED, 0);
 
         print_pinstat(idx, io_inputs, floating, read_2);
     }
@@ -146,7 +146,7 @@ static uint8_t detect_inputs(void) {
     uint8_t read1, read2;
     uint8_t inputs = 0xFF;
 
-    ioutils_setLED(1);
+    ioutils_setLED(ACT_LED, 1);
 
     for(uint16_t idx = 0; idx < 0x3FF; idx++) {
         ioutils_write(idx); // Zero the potential outputs
@@ -161,7 +161,7 @@ static uint8_t detect_inputs(void) {
         wdt_reset();
     }
 
-    ioutils_setLED(0);
+    ioutils_setLED(ACT_LED, 0);
 
     return inputs;
 }

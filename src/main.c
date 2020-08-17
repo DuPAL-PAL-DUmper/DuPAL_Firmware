@@ -56,7 +56,7 @@ int main(void) {
 
     void (*pal_analyzer)(void) = NULL;
 
-    ioutils_setLED(0);
+    ioutils_setLED(ACT_LED, 0);
 
     while(1) {
         if(uart_charavail()) {
@@ -91,7 +91,7 @@ int main(void) {
     while(1) {
         _delay_ms(1000);
         wdt_reset(); // Kick the watchdog
-        ioutils_setLED(0);
+        ioutils_setLED(ACT_LED, 0);
         _delay_ms(1000);
         wdt_reset(); // Kick the watchdog
     }

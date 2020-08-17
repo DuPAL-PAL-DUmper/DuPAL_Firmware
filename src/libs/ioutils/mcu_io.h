@@ -43,7 +43,7 @@
 #define PISO_DDR   DDRD
 #define PISO_CLR   2 // PD2 (out)
 #define PISO_PE    3 // PD3 (out)
-#define PISO_CE   4 // PD4 (out)
+#define PISO_CE    4 // PD4 (out)
 #define PISO_CLK   5 // PD5 (out)
 #define PISO_SER   6 // PD6 (in)
 
