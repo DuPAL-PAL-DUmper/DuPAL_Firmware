@@ -43,18 +43,27 @@
 #define SOCK_LED_P1  4 // PC5 (20-pin PAL)
 #define SOCK_LED_P2  5 // PC6 (24-pin PAL)
 
-#define SHFT_PORT_1 PORTB
-#define SHFT_PIN_1  PINB
-#define SHFT_DDR_1  DDRB
-#define SHFT_1_SER  0 // PB0
-#define SHFT_1_CLK  1 // PB1
-#define SHFT_1_RST  2 // PB2
+#define PISO_PORT  PORTD
+#define PISO_PIN   PIND
+#define PISO_DDR   DDRD
+#define PISO_CLR   2 // PD2
+#define PISO_SH    3 // PD3
+#define PISO_INH   4 // PD4
+#define PISO_CLK   5 // PD5
+#define PISO_SER   6 // PD6
 
-#define SHFT_PORT_2 PORTC
-#define SHFT_PIN_2  PINC
-#define SHFT_DDR_2  DDRC
-#define SHFT_2_RCLK 0 // PC0
-#define SHFT_2_OE   1 // PC1
+#define SIPO_PORT_1 PORTB
+#define SIPO_PIN_1  PINB
+#define SIPO_DDR_1  DDRB
+#define SIPO_1_SER  0 // PB0
+#define SIPO_1_CLK  1 // PB1
+#define SIPO_1_RST  2 // PB2
+
+#define SIPO_PORT_2 PORTC
+#define SIPO_PIN_2  PINC
+#define SIPO_DDR_2  DDRC
+#define SIPO_2_RCLK 0 // PC0
+#define SIPO_2_OE   1 // PC1
 
 void io_init(void);
 

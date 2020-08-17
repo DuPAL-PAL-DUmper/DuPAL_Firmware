@@ -7,21 +7,21 @@ static inline void toggle_SRCLK(void);
 static inline void toggle_RCLK(void);
 
 void shifter_init(void) {
-    SHFT_PORT_2 |= _BV(SHFT_2_OE); // Disable the outputs (/OE high)
-    SHFT_PORT_1 &= ~(_BV(SHFT_1_SER)); // Set SER low for now
-    SHFT_PORT_2 &= ~(_BV(SHFT_2_RCLK)); // Set SRCLK low for now
+    SIPO_PORT_2 |= _BV(SIPO_2_OE); // Disable the outputs (/OE high)
+    SIPO_PORT_1 &= ~(_BV(SIPO_1_SER)); // Set SER low for now
+    SIPO_PORT_2 &= ~(_BV(SIPO_2_RCLK)); // Set SRCLK low for now
 
-    SHFT_PORT_1 &= ~(_BV(SHFT_1_RST)); // Reset the shift registers (/SRCLR low)
+    SIPO_PORT_1 &= ~(_BV(SIPO_1_RST)); // Reset the shift registers (/SRCLR low)
     _delay_ms(5);
-    SHFT_PORT_1 |= _BV(SHFT_1_RST); // /SRCLR high
+    SIPO_PORT_1 |= _BV(SIPO_1_RST); // /SRCLR high
     
-    SHFT_PORT_2 &= ~(_BV(SHFT_2_OE)); // Enable the outputs
+    SIPO_PORT_2 &= ~(_BV(SIPO_2_OE)); // Enable the outputs
 }
 
 void shifter_set(uint32_t val) {
     for(uint8_t i = 0; i < 24; i++) {
-        if((val >> i) & 0x01) SHFT_PORT_1 |= _BV(SHFT_1_SER); // High
-        else SHFT_PORT_1 &= ~(_BV(SHFT_1_SER)); // Low
+        if((val >> i) & 0x01) SIPO_PORT_1 |= _BV(SIPO_1_SER); // High
+        else SIPO_PORT_1 &= ~(_BV(SIPO_1_SER)); // Low
 
         toggle_SRCLK();
     }
@@ -30,13 +30,13 @@ void shifter_set(uint32_t val) {
 }
 
 static inline void toggle_SRCLK(void) {
-    SHFT_PORT_1 |= _BV(SHFT_1_CLK); // Set CLK high
+    SIPO_PORT_1 |= _BV(SIPO_1_CLK); // Set CLK high
     _delay_us(100);
-    SHFT_PORT_1 &= ~(_BV(SHFT_1_CLK)); // Set CLK low
+    SIPO_PORT_1 &= ~(_BV(SIPO_1_CLK)); // Set CLK low
 }
 
 static inline void toggle_RCLK(void) {
-    SHFT_PORT_2 |= _BV(SHFT_2_RCLK); // Set RCLK high
+    SIPO_PORT_2 |= _BV(SIPO_2_RCLK); // Set RCLK high
     _delay_us(100);
-    SHFT_PORT_2 &= ~(_BV(SHFT_2_RCLK)); // Set RCLK low
+    SIPO_PORT_2 &= ~(_BV(SIPO_2_RCLK)); // Set RCLK low
 }

@@ -10,8 +10,8 @@ void io_init() {
     SOCK_LEDPORT &= ~(_BV(SOCK_LED_P1) | _BV(SOCK_LED_P2)); // Turn the LEDs off
 
     // Config the SIPO shifter ports
-    SHFT_DDR_1 |= (_BV(SHFT_1_SER) | _BV(SHFT_1_CLK) | _BV(SHFT_1_RST)); // Configure these pins as output
-    SHFT_DDR_2 |= (_BV(SHFT_2_RCLK) | _BV(SHFT_2_OE));
+    SIPO_DDR_1 |= (_BV(SIPO_1_SER) | _BV(SIPO_1_CLK) | _BV(SIPO_1_RST)); // Configure these pins as output
+    SIPO_DDR_2 |= (_BV(SIPO_2_RCLK) | _BV(SIPO_2_OE));
 
     // Config the PISO shifter ports
     // TODO
