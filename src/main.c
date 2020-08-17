@@ -18,6 +18,7 @@
 
 #include <uart/uart.h> 
 #include <shifter/sipo_shifter.h>
+#include <shifter/piso_shifter.h>
 
 
 #define VERSION "0.0.8"
@@ -41,8 +42,9 @@ int main(void) {
     // Initialize serial port
     uart_init();
     
-    // Prepare the shifter
+    // Prepare the shifters
     sipo_shifter_init();
+    piso_shifter_init();
     
     // Enable interrupts
     sei();
