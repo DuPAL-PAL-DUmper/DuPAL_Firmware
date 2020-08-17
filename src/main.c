@@ -17,7 +17,7 @@
 #include <ioutils/ioutils.h>
 
 #include <uart/uart.h> 
-#include <shifter/shifter.h>
+#include <shifter/sipo_shifter.h>
 
 
 #define VERSION "0.0.8"
@@ -42,7 +42,7 @@ int main(void) {
     uart_init();
     
     // Prepare the shifter
-    shifter_init();
+    sipo_shifter_init();
     
     // Enable interrupts
     sei();

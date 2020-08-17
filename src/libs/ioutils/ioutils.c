@@ -1,10 +1,10 @@
 #include "ioutils.h"
 
 #include <ioutils/mcu_io.h>
-#include <shifter/shifter.h>
+#include <shifter/sipo_shifter.h>
 
 void ioutils_write(uint32_t val) {
-    shifter_set(val);
+    sipo_shifter_set(val);
 }
 
 uint8_t ioutils_read(void) {

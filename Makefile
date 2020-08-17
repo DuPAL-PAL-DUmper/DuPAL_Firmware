@@ -44,7 +44,7 @@ FORMAT = ihex
 TARGET = out/DuPAL
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = src/main.c src/libs/ioutils/mcu_io.c src/libs/uart/uart.c src/libs/utils/strutils.c src/libs/shifter/shifter.c \
+SRC = src/main.c src/libs/ioutils/mcu_io.c src/libs/uart/uart.c src/libs/utils/strutils.c src/libs/shifter/sipo_shifter.c \
 		src/libs/ioutils/ioutils.c src/libs/pal_types/PAL16L8.c src/libs/pal_types/PAL12L6.c src/libs/pal_types/remote_control.c
 
 # List Assembler source files here.
