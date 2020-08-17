@@ -21,7 +21,7 @@
 #include <shifter/piso_shifter.h>
 
 
-#define VERSION "0.0.8"
+#define VERSION "0.1.0"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 static void print_supported_pal(void);
