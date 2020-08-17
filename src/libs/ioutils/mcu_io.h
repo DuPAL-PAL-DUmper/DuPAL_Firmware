@@ -10,20 +10,15 @@
  *  PC0 -> '595 RCLK   (OUT)
  *  PC1 -> '595 /OE    (OUT)
  * 
- *  PC2 -> PAL IO1 direct (IN)
- *  PC3 -> PAL IO2 direct (IN)
- *  PC4 -> PAL IO3 direct (IN)
- *  PC5 -> PAL IO4 direct (IN)
- *  PD2 -> PAL IO5 direct (IN)
- *  PD3 -> PAL IO6 direct (IN)
- * 
- *  PD4 -> PAL TRIO1 direct (IN)
- *  PD5 -> PAL TRIO2 direct (IN)
- * 
- *  PD6 -> PAL TRIO1 resistor (OUT)
- *  PD7 -> PAL TRIO2 resistor (OUT)
+ *  PD2 -> '166 /CLR (OUT)
+ *  PD3 -> '166 PE   (OUT)
+ *  PD4 -> '166 /CE  (OUT)
+ *  PD5 -> '166 CLK  (OUT)
+ *  PD6 -> '166 SER  (IN)
  * 
  *  PB5 -> Activity LED (OUT)
+ *  PC4 -> 20pin socket LED (OUT)
+ *  PC5 -> 24pin socket LED (OUT)
  * 
  */
 
@@ -47,8 +42,8 @@
 #define PISO_PIN   PIND
 #define PISO_DDR   DDRD
 #define PISO_CLR   2 // PD2 (out)
-#define PISO_SH    3 // PD3 (out)
-#define PISO_INH   4 // PD4 (out)
+#define PISO_PE    3 // PD3 (out)
+#define PISO_CE   4 // PD4 (out)
 #define PISO_CLK   5 // PD5 (out)
 #define PISO_SER   6 // PD6 (in)
 

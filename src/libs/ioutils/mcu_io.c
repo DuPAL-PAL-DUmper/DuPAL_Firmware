@@ -13,9 +13,8 @@ void io_init() {
     SIPO_DDR_1 |= (_BV(SIPO_1_SER) | _BV(SIPO_1_CLK) | _BV(SIPO_1_RST)); // Configure these pins as output
     SIPO_DDR_2 |= (_BV(SIPO_2_RCLK) | _BV(SIPO_2_OE));
     
-
     // Config the PISO shifter ports
-    PISO_DDR |= (_BV(PISO_CLK) | _BV(PISO_CLR) | _BV(PISO_INH) | _BV(PISO_SH)); // Outputs
+    PISO_DDR |= (_BV(PISO_CLK) | _BV(PISO_CLR) | _BV(PISO_PE) | _BV(PISO_CE)); // Outputs
     PISO_DDR  &= ~_BV(PISO_SER); // Inputs
     PISO_PORT &= ~_BV(PISO_SER); // Disable pullup on input
 
