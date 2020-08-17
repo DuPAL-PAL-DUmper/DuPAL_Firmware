@@ -6,6 +6,6 @@
 // Clears the shifters and enable their outputs
 void shifter_init(void);
 
-void shifter_set(uint16_t val);
+void shifter_set(uint32_t val);
 
 #endif /* _SHIFTER_HEADER_ */

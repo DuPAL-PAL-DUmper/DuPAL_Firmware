@@ -32,10 +32,16 @@
 #include <avr/io.h>
 #include <stdint.h>
 
-#define LEDPORT	 PORTB
-#define LEDPIN   PINB
-#define LEDDDR   DDRB
-#define LED_P    5 // PB5
+#define ACT_LEDPORT	 PORTB
+#define ACT_LEDPIN   PINB
+#define ACT_LEDDDR   DDRB
+#define ACT_LED_P    5 // PB5
+
+#define SOCK_LEDPORT PORTC
+#define SOCK_LEDPINC PINC
+#define SOCK_LEDDDR  DDRC
+#define SOCK_LED_P1  4 // PC5 (20-pin PAL)
+#define SOCK_LED_P2  5 // PC6 (24-pin PAL)
 
 #define SHFT_PORT_1 PORTB
 #define SHFT_PIN_1  PINB
