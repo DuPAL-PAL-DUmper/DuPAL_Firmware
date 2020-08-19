@@ -23,7 +23,8 @@ static void print_ioPhase(uint8_t totOuts);
 void pal16l8_analyze(void) {
     uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n");
 
-    ioutils_setLED(ACT_LED, 1); // Turn the LED on
+    ioutils_setLED(ACT_LED, 1); // Turn Activity LED on 
+    ioutils_setLED(P20_LED, 1); // Turn P20 LED on
 
     uart_puts("Detecting inputs...\n");
 
@@ -83,6 +84,8 @@ void pal16l8_analyze(void) {
 
     uart_puts(".e\n");
     uart_puts(MARKER_STRING);
+    
+    ioutils_setLED(P20_LED, 0); // Turn P20 LED off
 }
 
 static void print_ioOUTLabels(uint8_t io_mask) {
@@ -146,7 +149,7 @@ static uint8_t detect_inputs(void) {
     uint8_t read1, read2;
     uint8_t inputs = 0xFF;
 
-    ioutils_setLED(ACT_LED, 1);
+    ioutils_setLED(ACT_LED, 1); // Activity LED
 
     for(uint16_t idx = 0; idx < 0x3FF; idx++) {
         ioutils_write(idx); // Zero the potential outputs
