@@ -1,22 +1,36 @@
 #include "strutils.h"
 
+static uint8_t calc_asciiToBinDiff(char c);
+
+static uint8_t calc_asciiToBinDiff(char c) {
+    if(c >= 0x30 && c <= 0x39) { // A digit
+        return 0x30;
+    } else if(c >= 0x61 && c <= 0x66) { // lowercase letter
+        return 0x57;
+    } else if(c >= 0x41 && c <= 0x46) { // uppercase letter
+        return 0x37;
+    } else return 0; // Bad string    
+}
+
+uint8_t strutils_str_to_u8(char *str) {
+    uint8_t res = 0;
+    uint8_t diff = 0;
+    
+    for(uint8_t idx = 0; idx < 2; idx++) {
+        diff = calc_asciiToBinDiff(str[idx]);
+        res |= (((uint8_t)(str[idx] - diff)) << (4-(4 * idx)));
+    }
+
+    return res;
+}
+
 uint32_t strutils_str_to_u32(char *str) {
     uint32_t res = 0;
-
-    char c;
     uint8_t diff = 0;
+
     for(uint8_t idx = 0; idx < 8; idx++) {
-        c = str[idx];
-        
-        if(c >= 0x30 && c <= 0x39) { // A digit
-            diff = 0x30;
-        } else if(c >= 0x61 && c <= 0x66) { // lowercase letter
-            diff = 0x57;
-        } else if(c >= 0x41 && c <= 0x46) { // uppercase letter
-            diff = 0x37;
-        } else return 0; // Bad string
-            
-        res |= (((uint32_t)(c - diff)) << (28-(4 * idx)));
+        diff = calc_asciiToBinDiff(str[idx]);
+        res |= (((uint32_t)(str[idx] - diff)) << (28-(4 * idx)));
     }
 
     return res;

@@ -4,9 +4,9 @@
 #include <stdint.h>
 
 typedef enum {
-    ACT_LED,
-    P20_LED,
-    P24_LED
+    ACT_LED = 0,
+    P20_LED = 1,
+    P24_LED = 2
 } led;
 
 /*
