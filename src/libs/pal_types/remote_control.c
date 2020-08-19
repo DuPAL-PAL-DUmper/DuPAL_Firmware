@@ -22,7 +22,7 @@
 #define CMD_MODEL 'M'
 
 #define CMD_ERROR "CMD_ERR\n"
-#define RESP_MODEL "[M 01]\n"
+#define RESP_MODEL "[M 02]\n"
 
 static char pkt_buffer[PKT_BUFFER_SIZE];
 
@@ -39,8 +39,8 @@ void remote_control_analyze(void) {
 
             switch(pkt_buffer[0]) {
                 case CMD_MODEL: {
-                    uart_puts(RESP_MODEL);
-                }
+                        uart_puts(RESP_MODEL);
+                    }
                     break;
                 case CMD_WRITE: {
                         uint32_t addr = strutils_str_to_u32(&pkt_buffer[2]) & 0x3FFFF;

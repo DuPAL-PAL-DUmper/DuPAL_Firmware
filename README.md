@@ -226,6 +226,13 @@ This command will force a reset by watchdog of the DuPAL board.
 
 This command is pretty useless for now, all it does is exiting from the Remote Control mode and leave the board waiting for another serial connection or a reset.
 
+####### Model
+
+- Syntax: `>M<`
+- Response: `[M xx]`
+
+Where `xx` is the model of the DuPAL board.
+
 ## Hardware notes
 
 ### Recognizing three-state outputs
