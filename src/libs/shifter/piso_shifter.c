@@ -17,7 +17,6 @@ uint8_t piso_shifter_get(void) {
     _delay_us(50);
     PISO_PORT |= _BV(PISO_CLK); // Clock to high
     _delay_us(50);
-    PISO_PORT &= ~(_BV(PISO_CLK)); // Clock to low
     PISO_PORT |= _BV(PISO_PE); // Disable the inputs
 
     for(int idx = 0; idx < 8; idx++) {
