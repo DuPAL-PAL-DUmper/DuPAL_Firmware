@@ -261,12 +261,33 @@ This command will force a reset by watchdog of the DuPAL board.
 
 This command is pretty useless for now, all it does is exiting from the Remote Control mode and leave the board waiting for another serial connection or a reset.
 
-####### Model
+###### Model
 
 - Syntax: `>M<`
 - Response: `[M xx]`
 
 Where `xx` is the model of the DuPAL board.
+
+E.g.
+
+```text
+[M 02]
+```
+For a revision 2.x board.
+
+###### LED control
+
+- Syntax `>L xx<`
+- Response: `[L xx]`
+
+Where `xx` is thus structured:
+
+- Bit 0: flips the LEN on (1) or off (0)
+- Bit 1-7: Select which LED to control:
+  - 1: 20 pin PAL LED
+  - 2: 24 pin PAL LED
+
+This command is available on rev.2 boards onward.
 
 ## Hardware notes
 
