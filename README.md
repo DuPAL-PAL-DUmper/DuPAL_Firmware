@@ -172,6 +172,8 @@ A string `CMD_ERR` will be sent in case the command is not recognized.
 
 Where `xxxxxxxx` is the hex representation of the status to apply to the following pins, from MSB to LSB:
 
+For a 20 pins PAL:
+
 ```text
   31   30   29   28   27   26   25   24
 .----.----.----.----.----.----.----.----.
@@ -196,6 +198,30 @@ Where `xxxxxxxx` is the hex representation of the status to apply to the followi
 
 Pins 12 through 19 are connected to the MCU via a 10k resistor.
 
+For a 24 pins PAL:
+
+```text
+  31   30   29   28   27   26   25   24
+.----.----.----.----.----.----.----.----.
+| xx | xx | xx | xx | xx | xx | xx | xx | Byte 3
+'----'----'----'----'----'----'----'----'
+
+  23   22   21   20   19   18   17   16
+.----.----.----.----.----.----.----.----.
+| xx | xx | xx | 23 | 14 | 13 | 11 | 22 | Byte 2
+'----'----'----'----'----'----'----'----'
+
+  15   14   13   12   11   10    9    8
+.----.----.----.----.----.----.----.----.
+| 21 | 20 | 19 | 18 | 17 | 16 | 15 | 10 | Byte 1
+'----'----'----'----'----'----'----'----'
+
+   7    6    5    4    3    2    1    0
+.----.----.----.----.----.----.----.----.
+|  8 |  7 |  6 |  5 |  4 |  3 |  2 |  1 | Byte 0
+'----'----'----'----'----'----'----'----'
+```
+
 The response repeats the same mask that was written, to make sure the board got the command correctly and set the correct pins.
 
 ###### Read
@@ -203,12 +229,21 @@ The response repeats the same mask that was written, to make sure the board got 
 - Syntax: `>R<`
 - Response: `[R xx]`
 
-Where `xx` is the hex representation of the status of the following pins, from MSB to LSB:
+Where `xx` is the hex representation of the status of the following pins, from MSB to LSB, for a 20 pins PAL:
 
 ```text
    7    6    5    4    3    2    1    0
 .----.----.----.----.----.----.----.----.
 | 12 | 19 | 13 | 14 | 15 | 16 | 17 | 18 |
+'----'----'----'----'----'----'----'----'
+```
+
+From MSB to LSB for a 24 pins PAL:
+
+```text
+   7    6    5    4    3    2    1    0
+.----.----.----.----.----.----.----.----.
+| 22 | 21 | 20 | 19 | 18 | 17 | 16 | 15 |
 '----'----'----'----'----'----'----'----'
 ```
 
