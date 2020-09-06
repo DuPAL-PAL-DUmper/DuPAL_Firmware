@@ -20,16 +20,10 @@
 #define CMD_EXIT 'X'
 #define CMD_RESET 'K'
 #define CMD_MODEL 'M'
-<<<<<<< HEAD
-
-#define CMD_ERROR "CMD_ERR\n"
-#define RESP_MODEL "[M 01]\n"
-=======
 #define CMD_LED 'L'
 
 #define CMD_ERROR "CMD_ERR\n"
 #define RESP_MODEL "[M 02]\n"
->>>>>>> rev2_board
 
 static char pkt_buffer[PKT_BUFFER_SIZE];
 

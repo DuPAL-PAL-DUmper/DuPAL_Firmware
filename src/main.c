@@ -11,6 +11,7 @@
 
 #include <pal_types/PAL16L8.h>
 #include <pal_types/PAL12L6.h>
+#include <pal_types/PAL20L8.h>
 #include <pal_types/remote_control.h>
 
 #include <ioutils/mcu_io.h>
@@ -21,7 +22,7 @@
 #include <shifter/piso_shifter.h>
 
 
-#define VERSION "0.1.0"
+#define VERSION "0.1.1"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 static void print_supported_pal(void);
@@ -69,6 +70,9 @@ int main(void) {
                 case 'b':
                     pal_analyzer = pal12l6_analyze;
                     break;
+                case 'c':
+                     pal_analyzer = pal20l8_analyze;
+                    break;                   
                 case 'x':
                     pal_analyzer = remote_control_analyze;
                     break;
