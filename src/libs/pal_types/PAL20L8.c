@@ -151,7 +151,7 @@ static uint8_t detect_inputs(void) {
 
     ioutils_setLED(ACT_LED, 1); // Activity LED
 
-    for(uint32_t idx = 0; idx < 0x1FE07FF; idx++) {
+    for(uint32_t idx = 0; idx < 0x3E07FF; idx++) {
         if(idx & 0x1F800) continue; // Do not set the I/O pins
 
         ioutils_write(idx); // Zero the potential outputs
