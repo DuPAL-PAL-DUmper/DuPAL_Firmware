@@ -31,7 +31,7 @@ void pal20l8_analyze(void) {
     // Detect the inputs on the PAL
     uint8_t io_inputs = detect_inputs();
 
-    if(io_inputs == 0x3F) { // All IOs as input? maybe there is no chip inserted
+    if(io_inputs == 0x7E) { // All IOs as input? maybe there is no chip inserted
         uart_puts("WARNING: All the IOs are floating... Maybe no or broken chip inserted?\n\n");
     }
 
@@ -174,15 +174,15 @@ static void print_6io_conf(uint8_t inputs) {
     sprintf(str_buf, "Detected IO config:\n");
     uart_puts(str_buf);
     
-    uart_puts("IO18 IO17 IO16 IO15 IO14 IO13\n");
+    uart_puts("IO21 IO20 IO1 IO18 IO17 IO16\n");
     memset(str_buf, 0, STR_BUF_SIZE);
     sprintf(str_buf, " %c    %c    %c    %c    %c    %c\n\n", 
-    ((inputs >> 0) & 0x01) ? 'I' : 'O',
-    ((inputs >> 1) & 0x01) ? 'I' : 'O',
-    ((inputs >> 2) & 0x01) ? 'I' : 'O',
-    ((inputs >> 3) & 0x01) ? 'I' : 'O',
+    ((inputs >> 6) & 0x01) ? 'I' : 'O',
+    ((inputs >> 5) & 0x01) ? 'I' : 'O',
     ((inputs >> 4) & 0x01) ? 'I' : 'O',
-    ((inputs >> 5) & 0x01) ? 'I' : 'O');
+    ((inputs >> 3) & 0x01) ? 'I' : 'O',
+    ((inputs >> 2) & 0x01) ? 'I' : 'O',
+    ((inputs >> 1) & 0x01) ? 'I' : 'O');
     uart_puts(str_buf);
 }
 
