@@ -10,6 +10,8 @@ The DuPAL (**Du**mper of **PAL**s) is a set of software and hardware instruments
 
 **Note:** The current version of the firmware is compatible with rev.2 boards __only__.
 
+**Note 2:** PALs that use outputs feeding their signal back into themselves (thus beckoming an oscillator) are currently not supported.
+
 ### Building
 
 Building was tested on *Debian 10* and *Fedora 32*.
