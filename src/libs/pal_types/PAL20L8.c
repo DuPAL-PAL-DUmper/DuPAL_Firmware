@@ -89,24 +89,24 @@ void pal20l8_analyze(void) {
 }
 
 static void print_ioOUTLabels(uint8_t io_mask) {
-    io_mask = ~io_mask & 0x3F;
+    io_mask = ~io_mask & 0x7E;
     uart_puts(".ob ");
-    for(uint8_t idx = 0; idx < 6; idx++) {
+    for(uint8_t idx = 1; idx < 7; idx++) {
         if((io_mask >> idx) & 0x01) {
-            sprintf(str_buf, "io%u ", 18 - idx);
+            sprintf(str_buf, "io%u ", 22 - idx);
             uart_puts(str_buf);
         }
     }
 
-    uart_puts("o19 o12 ");
-    for(uint8_t idx = 0; idx < 6; idx++) {
+    uart_puts("o15 o22 ");
+    for(uint8_t idx = 1; idx < 7; idx++) {
         if((io_mask >> idx) & 0x01) {
-            sprintf(str_buf, "io%uoe ", 18 - idx);
+            sprintf(str_buf, "io%uoe ", 22 - idx);
             uart_puts(str_buf);
         }
     }
 
-    uart_puts("o19oe o12oe \n");
+    uart_puts("o15oe o22oe \n");
 }
 
 static void print_ioPhase(uint8_t totOuts) {
@@ -117,10 +117,10 @@ static void print_ioPhase(uint8_t totOuts) {
 }
 
 static void print_ioINLabels(uint8_t io_mask) {
-    uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i11 ");
-    for(uint8_t idx = 0; idx < 6; idx++) {
+    uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i13 i14 i23 ");
+    for(uint8_t idx = 1; idx < 7; idx++) {
         if((io_mask >> idx) & 0x01) {
-            sprintf(str_buf, "io%u ", 18 - idx);
+            sprintf(str_buf, "io%u ", (22 - idx));
             uart_puts(str_buf);
         }
     }
@@ -131,16 +131,16 @@ static void print_ioINLabels(uint8_t io_mask) {
 static uint8_t calculate_totInputs(uint8_t io_mask) {
     uint8_t additional_inputs = 0;
 
-    for(uint8_t idx = 0; idx < 6; idx++) additional_inputs += ((io_mask >> idx) & 0x01);
+    for(uint8_t idx = 1; idx < 7; idx++) additional_inputs += ((io_mask >> idx) & 0x01);
 
-    return 10 + additional_inputs;
+    return 14 + additional_inputs;
 }
 
 static uint8_t calculate_totOutputs(uint8_t io_mask) {
     uint8_t additional_outputs = 0;
 
-    io_mask = ~io_mask & 0x3F;
-    for(uint8_t idx = 0; idx < 6; idx++) additional_outputs += ((io_mask >> idx) & 0x01);
+    io_mask = ~io_mask & 0x7E;
+    for(uint8_t idx = 1; idx < 7; idx++) additional_outputs += ((io_mask >> idx) & 0x01);
 
     return 2 + additional_outputs;
 }
