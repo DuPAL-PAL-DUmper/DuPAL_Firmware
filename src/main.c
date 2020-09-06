@@ -109,6 +109,7 @@ static void print_supported_pal(void) {
     uart_puts("---------------------------------\n");
     uart_puts("a) PAL16L8/PAL10L8\n");
     uart_puts("b) PAL12L6\n");
+    uart_puts("c) PAL20L8\n");
     uart_puts("x) Remote control\n");
     uart_puts("Press the corresponding letter to start analisys.\n\n");
 }

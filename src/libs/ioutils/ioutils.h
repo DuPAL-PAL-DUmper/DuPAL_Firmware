@@ -18,16 +18,17 @@ typedef enum {
  * 23       | xx 
  * 14       | xx
  * 13       | xx
- * 11       | 12       (resistor)
- * 22       | 19       (resistor)
- * 21       | 13       (resistor)
- * 20       | 14       (resistor)
- * 19       | 15       (resistor)
- * 18       | 16       (resistor)
- * 17       | 17       (resistor)
- * 16       | 18       (resistor)
- * 15       | 11
- * 10       |  9
+ * 11       | xx
+ * 22       | 12       (resistor)
+ * 21       | 19       (resistor)
+ * 20       | 13       (resistor)
+ * 19       | 14       (resistor)
+ * 18       | 15       (resistor)
+ * 17       | 16       (resistor)
+ * 16       | 17       (resistor)
+ * 15       | 18       (resistor)
+ * 10       | 11
+ *  9       |  9
  *  8       |  8
  *  7       |  7
  *  6       |  6

@@ -162,6 +162,8 @@ static uint8_t detect_inputs(void) {
         inputs &= ((read1 ^ read2) & 0x3F);
 
         wdt_reset();
+
+        if(!(inputs & 0x3F)) break; // We already found that all the I/Os are outputs
     }
 
     ioutils_setLED(ACT_LED, 0);

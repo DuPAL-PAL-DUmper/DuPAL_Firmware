@@ -26,7 +26,7 @@ void pal20l8_analyze(void) {
     ioutils_setLED(ACT_LED, 1); // Turn Activity LED on 
     ioutils_setLED(P24_LED, 1); // Turn P24 LED on
 
-    uart_puts("Detecting inputs...\n");
+    uart_puts("Detecting inputs... This may take a long time.\n");
 
     // Detect the inputs on the PAL
     uint8_t io_inputs = detect_inputs();
@@ -151,17 +151,21 @@ static uint8_t detect_inputs(void) {
 
     ioutils_setLED(ACT_LED, 1); // Activity LED
 
-    for(uint16_t idx = 0; idx < 0x3FF; idx++) {
+    for(uint32_t idx = 0; idx < 0x1FE07FF; idx++) {
+        if(idx & 0x1F800) continue; // Do not set the I/O pins
+
         ioutils_write(idx); // Zero the potential outputs
         _delay_us(50);
         read1 = ioutils_read();
-        ioutils_write(0xFC00 | idx); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
+        ioutils_write(0x1F800 | idx); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
         _delay_us(50);
         read2 = ioutils_read();
 
         inputs &= ((read1 ^ read2) & 0x7E);
 
         wdt_reset();
+
+        if(!(inputs & 0x7E)) break; // We already found that all the I/Os are outputs
     }
 
     ioutils_setLED(ACT_LED, 0);
@@ -174,7 +178,7 @@ static void print_6io_conf(uint8_t inputs) {
     sprintf(str_buf, "Detected IO config:\n");
     uart_puts(str_buf);
     
-    uart_puts("IO21 IO20 IO1 IO18 IO17 IO16\n");
+    uart_puts("IO21 IO20 IO19 IO18 IO17 IO16\n");
     memset(str_buf, 0, STR_BUF_SIZE);
     sprintf(str_buf, " %c    %c    %c    %c    %c    %c\n\n", 
     ((inputs >> 6) & 0x01) ? 'I' : 'O',
