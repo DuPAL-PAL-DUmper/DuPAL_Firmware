@@ -17,10 +17,11 @@
 #include <ioutils/ioutils.h>
 
 #include <uart/uart.h> 
-#include <shifter/shifter.h>
+#include <shifter/sipo_shifter.h>
+#include <shifter/piso_shifter.h>
 
 
-#define VERSION "0.0.9"
+#define VERSION "0.1.0"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 static void print_supported_pal(void);
@@ -41,8 +42,9 @@ int main(void) {
     // Initialize serial port
     uart_init();
     
-    // Prepare the shifter
-    shifter_init();
+    // Prepare the shifters
+    sipo_shifter_init();
+    piso_shifter_init();
     
     // Enable interrupts
     sei();
@@ -54,7 +56,7 @@ int main(void) {
 
     void (*pal_analyzer)(void) = NULL;
 
-    ioutils_setLED(0);
+    ioutils_setLED(ACT_LED, 0);
 
     while(1) {
         if(uart_charavail()) {
@@ -89,7 +91,7 @@ int main(void) {
     while(1) {
         _delay_ms(1000);
         wdt_reset(); // Kick the watchdog
-        ioutils_setLED(0);
+        ioutils_setLED(ACT_LED, 0);
         _delay_ms(1000);
         wdt_reset(); // Kick the watchdog
     }

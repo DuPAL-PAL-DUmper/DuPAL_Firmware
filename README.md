@@ -8,6 +8,8 @@ Most of the PAL ICs in the devices floating around are read-protected: this mean
 
 The DuPAL (**Du**mper of **PAL**s) is a set of software and hardware instruments that I developed to help me bruteforcing and analyzing these ICs, with the objective of eventually being able to dump and save all the ones in the circuit boards I have around. Wishful thinking maybe, but I'm one step closer now.
 
+**Note:** The current version of the firmware is compatible with rev.2 boards __only__.
+
 ### Building
 
 Building was tested on *Debian 10* and *Fedora 32*.
@@ -172,6 +174,8 @@ A string `CMD_ERR` will be sent in case the command is not recognized.
 
 Where `xxxxxxxx` is the hex representation of the status to apply to the following pins, from MSB to LSB:
 
+For a 20 pins PAL:
+
 ```text
   31   30   29   28   27   26   25   24
 .----.----.----.----.----.----.----.----.
@@ -196,6 +200,30 @@ Where `xxxxxxxx` is the hex representation of the status to apply to the followi
 
 Pins 12 through 19 are connected to the MCU via a 10k resistor.
 
+For a 24 pins PAL:
+
+```text
+  31   30   29   28   27   26   25   24
+.----.----.----.----.----.----.----.----.
+| xx | xx | xx | xx | xx | xx | xx | xx | Byte 3
+'----'----'----'----'----'----'----'----'
+
+  23   22   21   20   19   18   17   16
+.----.----.----.----.----.----.----.----.
+| xx | xx | xx | 23 | 14 | 13 | 11 | 22 | Byte 2
+'----'----'----'----'----'----'----'----'
+
+  15   14   13   12   11   10    9    8
+.----.----.----.----.----.----.----.----.
+| 21 | 20 | 19 | 18 | 17 | 16 | 15 | 10 | Byte 1
+'----'----'----'----'----'----'----'----'
+
+   7    6    5    4    3    2    1    0
+.----.----.----.----.----.----.----.----.
+|  8 |  7 |  6 |  5 |  4 |  3 |  2 |  1 | Byte 0
+'----'----'----'----'----'----'----'----'
+```
+
 The response repeats the same mask that was written, to make sure the board got the command correctly and set the correct pins.
 
 ###### Read
@@ -203,12 +231,21 @@ The response repeats the same mask that was written, to make sure the board got 
 - Syntax: `>R<`
 - Response: `[R xx]`
 
-Where `xx` is the hex representation of the status of the following pins, from MSB to LSB:
+Where `xx` is the hex representation of the status of the following pins, from MSB to LSB, for a 20 pins PAL:
 
 ```text
    7    6    5    4    3    2    1    0
 .----.----.----.----.----.----.----.----.
 | 12 | 19 | 13 | 14 | 15 | 16 | 17 | 18 |
+'----'----'----'----'----'----'----'----'
+```
+
+From MSB to LSB for a 24 pins PAL:
+
+```text
+   7    6    5    4    3    2    1    0
+.----.----.----.----.----.----.----.----.
+| 22 | 21 | 20 | 19 | 18 | 17 | 16 | 15 |
 '----'----'----'----'----'----'----'----'
 ```
 
@@ -225,6 +262,35 @@ This command will force a reset by watchdog of the DuPAL board.
 - Response: N/A
 
 This command is pretty useless for now, all it does is exiting from the Remote Control mode and leave the board waiting for another serial connection or a reset.
+
+###### Model
+
+- Syntax: `>M<`
+- Response: `[M xx]`
+
+Where `xx` is the model of the DuPAL board.
+
+E.g.
+
+```text
+[M 02]
+```
+
+For a revision 2.x board.
+
+###### LED control
+
+- Syntax `>L xx<`
+- Response: `[L xx]`
+
+Where `xx` is thus structured:
+
+- Bit 0: flips the LEN on (1) or off (0)
+- Bit 1-7: Select which LED to control:
+  - 1: 20 pin PAL LED
+  - 2: 24 pin PAL LED
+
+This command is available on rev.2 boards onward.
 
 ## Hardware notes
 

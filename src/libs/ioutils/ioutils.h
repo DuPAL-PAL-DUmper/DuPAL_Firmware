@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+typedef enum {
+    ACT_LED = 0,
+    P20_LED = 1,
+    P24_LED = 2
+} led;
+
 /*
  * This function will use both shifters and MCU to toggle 18 outputs 
  * From MSB to LSB, the following pins on the PAL socket are toggled
@@ -27,6 +33,12 @@
  */
 void ioutils_write(uint32_t val);
 
-void ioutils_setLED(uint8_t status);
+/*
+ * This will return a byte that contains the status of the PAL pins, from MSB to LSB 
+ * 12, 19, 13, 14, 15, 16, 17, 18
+ */
+uint8_t ioutils_read(void);
+
+void ioutils_setLED(led l, uint8_t status);
 
 #endif /* _IOUTILS_H_ */

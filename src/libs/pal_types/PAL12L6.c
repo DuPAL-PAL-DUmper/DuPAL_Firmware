@@ -6,7 +6,6 @@
 #include <util/delay.h>
 
 #include <uart/uart.h>
-#include <ioutils/mcu_io.h>
 #include <ioutils/ioutils.h>
 #include <utils/strutils.h>
 
@@ -15,7 +14,8 @@ static void print_pinstat(uint16_t idx, uint8_t input, uint8_t floating);
 void pal12l6_analyze(void) {
     uart_puts("-[ PAL12L6 analyzer ]-\n\n");
 
-    ioutils_setLED(1); // Turn the LED on
+    ioutils_setLED(ACT_LED, 1); // Turn the Activity LED on
+    ioutils_setLED(P20_LED, 1); // Turn P20 LED on
 
     uart_puts(MARKER_STRING);
     uart_puts(".i 12\n");
@@ -28,27 +28,29 @@ void pal12l6_analyze(void) {
     for(uint32_t idx = 0; idx <= 0x0FFF; idx++) {
         wdt_reset();
 
-        ioutils_setLED(1);
+        ioutils_setLED(ACT_LED, 1); // Activity LED
 
         uint32_t comp_idx = (idx & 0x3FF) | ((uint32_t)(idx & 0x0C00) << 6); // Set the address and pull the outputs low
         ioutils_write(comp_idx);
         _delay_us(50);
-        read_1 = io_read() & 0x3F;
+        read_1 = ioutils_read() & 0x3F;
 
         comp_idx = (idx & 0x3FF) | ((uint32_t)(idx & 0x0C00) << 6) | 0xFC00; // Same address with the outputs high
         ioutils_write(comp_idx);
         _delay_us(50);
-        read_2 = io_read() & 0x3F;
+        read_2 = ioutils_read() & 0x3F;
 
         floating = ((read_1 ^ read_2) & 0x3F);
 
-        ioutils_setLED(0);
+        ioutils_setLED(ACT_LED, 0);
 
         print_pinstat(idx, read_2, floating);
     }
 
     uart_puts(".e\n");
     uart_puts(MARKER_STRING);
+    
+    ioutils_setLED(P20_LED, 0); // Turn P20 LED off
 }
 
 static void print_pinstat(uint16_t idx, uint8_t input, uint8_t floating) {

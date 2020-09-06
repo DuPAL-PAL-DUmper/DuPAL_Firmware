@@ -7,7 +7,6 @@
 #include <util/delay.h>
 
 #include <uart/uart.h>
-#include <ioutils/mcu_io.h>
 #include <ioutils/ioutils.h>
 #include <utils/strutils.h>
 
@@ -24,7 +23,8 @@ static void print_ioPhase(uint8_t totOuts);
 void pal16l8_analyze(void) {
     uart_puts("-[ PAL16L8 / PAL10L8 analyzer ]-\n");
 
-    ioutils_setLED(1); // Turn the LED on
+    ioutils_setLED(ACT_LED, 1); // Turn Activity LED on 
+    ioutils_setLED(P20_LED, 1); // Turn P20 LED on
 
     uart_puts("Detecting inputs...\n");
 
@@ -41,9 +41,9 @@ void pal16l8_analyze(void) {
 
     // Reset the watchdog and blink a bit
     for(uint8_t i = 0; i < 5; i++) {
-        ioutils_setLED(1);
+        ioutils_setLED(ACT_LED, 1);
         _delay_ms(500);
-        ioutils_setLED(0);
+        ioutils_setLED(ACT_LED, 0);
         _delay_ms(500);
         wdt_reset();
     }
@@ -63,27 +63,29 @@ void pal16l8_analyze(void) {
 
         if((idx >> 10) & (~io_inputs & 0x3F)) continue; // Skip this round
 
-        ioutils_setLED(1);
+        ioutils_setLED(ACT_LED, 1);
         // First, try to force the the IOs and outputs to low
         ioutils_write(idx);
         _delay_us(50);
-        read_1 = io_read();
+        read_1 = ioutils_read();
 
         // Then try to force them to high
         // We will also try to force the pins that we did not detect as input in the beginning
         ioutils_write(0x030000 | (((uint32_t)(~io_inputs & 0x3F)) << 10) | idx);
         _delay_us(50);
-        read_2 = io_read();
+        read_2 = ioutils_read();
 
         floating = (read_1 ^ read_2);
 
-        ioutils_setLED(0);
+        ioutils_setLED(ACT_LED, 0);
 
         print_pinstat(idx, io_inputs, floating, read_2);
     }
 
     uart_puts(".e\n");
     uart_puts(MARKER_STRING);
+    
+    ioutils_setLED(P20_LED, 0); // Turn P20 LED off
 }
 
 static void print_ioOUTLabels(uint8_t io_mask) {
@@ -147,22 +149,22 @@ static uint8_t detect_inputs(void) {
     uint8_t read1, read2;
     uint8_t inputs = 0xFF;
 
-    ioutils_setLED(1);
+    ioutils_setLED(ACT_LED, 1); // Activity LED
 
     for(uint16_t idx = 0; idx < 0x3FF; idx++) {
         ioutils_write(idx); // Zero the potential outputs
         _delay_us(50);
-        read1 = io_read();
+        read1 = ioutils_read();
         ioutils_write(0xFC00 | idx); // Pull high all the IOx pins on the PAL, the rest of the address will remain the same
         _delay_us(50);
-        read2 = io_read();
+        read2 = ioutils_read();
 
         inputs &= ((read1 ^ read2) & 0x3F);
 
         wdt_reset();
     }
 
-    ioutils_setLED(0);
+    ioutils_setLED(ACT_LED, 0);
 
     return inputs;
 }

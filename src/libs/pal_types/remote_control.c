@@ -8,7 +8,6 @@
 #include <uart/uart.h>
 #include <utils/strutils.h>
 #include <ioutils/ioutils.h>
-#include <ioutils/mcu_io.h>
 
 #define PKT_BUFFER_SIZE 32
 #define PKT_START '>'
@@ -21,9 +20,16 @@
 #define CMD_EXIT 'X'
 #define CMD_RESET 'K'
 #define CMD_MODEL 'M'
+<<<<<<< HEAD
 
 #define CMD_ERROR "CMD_ERR\n"
 #define RESP_MODEL "[M 01]\n"
+=======
+#define CMD_LED 'L'
+
+#define CMD_ERROR "CMD_ERR\n"
+#define RESP_MODEL "[M 02]\n"
+>>>>>>> rev2_board
 
 static char pkt_buffer[PKT_BUFFER_SIZE];
 
@@ -36,15 +42,32 @@ void remote_control_analyze(void) {
 
     while(1) {
         if(receive_pkt()) {
-            ioutils_setLED(1);
+            ioutils_setLED(ACT_LED, 1);
 
             switch(pkt_buffer[0]) {
+                case CMD_LED: {
+                        uint8_t dat = strutils_str_to_u8(&pkt_buffer[2]);
+                        uint8_t led = (dat >> 1) & 0x7F, status = dat & 0x01;
+
+                        pkt_buffer[0] = RESP_START;
+                        pkt_buffer[1] = CMD_LED;
+                        pkt_buffer[2] = ' ';
+                        strutils_u8_to_str(&pkt_buffer[3], dat);
+                        pkt_buffer[5] = RESP_END;
+                        pkt_buffer[6] = '\n';
+                        pkt_buffer[7] = 0;
+                    
+                        uart_puts(pkt_buffer);
+
+                        ioutils_setLED(led, status);
+                    }
+                    break;
                 case CMD_MODEL: {
-                    uart_puts(RESP_MODEL);
-                }
+                        uart_puts(RESP_MODEL);
+                    }
                     break;
                 case CMD_WRITE: {
-                        uint32_t addr = strutils_str_to_u32(&pkt_buffer[2]) & 0x3FFFF;
+                        uint32_t addr = strutils_str_to_u32(&pkt_buffer[2]) & 0xFFFFFF;
                         ioutils_write(addr);
                         pkt_buffer[0] = RESP_START;
                         pkt_buffer[1] = CMD_WRITE;
@@ -53,6 +76,7 @@ void remote_control_analyze(void) {
                         pkt_buffer[11] = RESP_END;
                         pkt_buffer[12] = '\n';
                         pkt_buffer[13] = 0;
+
                         uart_puts(pkt_buffer);
                     }
                     break;
@@ -60,7 +84,7 @@ void remote_control_analyze(void) {
                     pkt_buffer[0] = RESP_START;
                     pkt_buffer[1] = CMD_READ;
                     pkt_buffer[2] = ' ';
-                    strutils_u8_to_str(&pkt_buffer[3], io_read());
+                    strutils_u8_to_str(&pkt_buffer[3], ioutils_read());
                     pkt_buffer[5] = RESP_END;
                     pkt_buffer[6] = '\n';
                     pkt_buffer[7] = 0;
@@ -76,7 +100,7 @@ void remote_control_analyze(void) {
                     break;
             }
 
-            ioutils_setLED(0);
+            ioutils_setLED(ACT_LED, 0);
         }
 
         wdt_reset();
