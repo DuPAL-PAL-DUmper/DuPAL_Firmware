@@ -1,5 +1,7 @@
 #include "strutils.h"
 
+static char progress_whirl[4] = {'\\', '|', '/', '-'};
+
 static uint8_t calc_asciiToBinDiff(char c);
 
 static uint8_t calc_asciiToBinDiff(char c) {
@@ -10,6 +12,10 @@ static uint8_t calc_asciiToBinDiff(char c) {
     } else if(c >= 0x41 && c <= 0x46) { // uppercase letter
         return 0x37;
     } else return 0; // Bad string    
+}
+
+char get_whirlChar(uint8_t idx) {
+    return progress_whirl[idx % sizeof(progress_whirl)];
 }
 
 uint8_t strutils_str_to_u8(char *str) {

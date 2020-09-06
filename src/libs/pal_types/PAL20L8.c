@@ -166,7 +166,16 @@ static uint8_t detect_inputs(void) {
         wdt_reset();
 
         if(!(inputs & 0x7E)) break; // We already found that all the I/Os are outputs
+
+        // Print something so we show we're alive...
+        if(!(idx % 100)) {
+            uart_putchar('\b');
+            uart_putchar(get_whirlChar(idx / 100));
+        }
     }
+
+    // Delete the whirl
+    uart_puts("\b \n");
 
     ioutils_setLED(ACT_LED, 0);
 
