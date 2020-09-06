@@ -91,22 +91,23 @@ void pal20l8_analyze(void) {
 static void print_ioOUTLabels(uint8_t io_mask) {
     io_mask = ~io_mask & 0x7E;
     uart_puts(".ob ");
+    uart_puts("o15 ");
     for(uint8_t idx = 1; idx < 7; idx++) {
         if((io_mask >> idx) & 0x01) {
             sprintf(str_buf, "io%u ", 22 - idx);
             uart_puts(str_buf);
         }
     }
+    uart_puts("o22 ");
 
-    uart_puts("o15 o22 ");
+    uart_puts("o15oe ");
     for(uint8_t idx = 1; idx < 7; idx++) {
         if((io_mask >> idx) & 0x01) {
             sprintf(str_buf, "io%uoe ", 22 - idx);
             uart_puts(str_buf);
         }
     }
-
-    uart_puts("o15oe o22oe \n");
+    uart_puts("o22oe \n");
 }
 
 static void print_ioPhase(uint8_t totOuts) {
@@ -117,15 +118,14 @@ static void print_ioPhase(uint8_t totOuts) {
 }
 
 static void print_ioINLabels(uint8_t io_mask) {
-    uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i13 i14 i23 ");
+    uart_puts(".ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i13 i14");
     for(uint8_t idx = 1; idx < 7; idx++) {
         if((io_mask >> idx) & 0x01) {
             sprintf(str_buf, "io%u ", (22 - idx));
             uart_puts(str_buf);
         }
     }
-
-    uart_puts("\n");
+    uart_puts("i23\n");
 }
 
 static uint8_t calculate_totInputs(uint8_t io_mask) {
