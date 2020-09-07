@@ -9,7 +9,6 @@ Most of the PAL ICs in the devices floating around are read-protected: this mean
 The DuPAL (**Du**mper of **PAL**s) is a set of software and hardware instruments that I developed to help me bruteforcing and analyzing these ICs, with the objective of eventually being able to dump and save all the ones in the circuit boards I have around. Wishful thinking maybe, but I'm one step closer now.
 
 **Note:** The current version of the firmware is compatible with rev.2 boards __only__.
-**Note 2:** PALs that use I/O pins as output that feedback into themselves are currently not supported.
 
 ### Building
 
@@ -54,105 +53,14 @@ connected to /dev/ttyUSB0
 Escape character: Ctrl-\
 Type the escape character to get to the prompt.
 
-DuPAL - 0.0.8
-
-Select which PAL type to analyze:
----------------------------------
-a) PAL16L8/PAL10L8
-b) PAL12L6
-x) Remote control
-Press the corresponding letter to start analisys.
+DuPAL - 0.1.1
 ```
 
-Once connected via the serial port, the board will restart automatically and present the user a menu.
+Once connected via the serial port, the board will restart automatically and present the user a startup string.
 
 ### Operating modes
 
-The DuPAL firmware has two operating modes, that can be selected via the menu presented after connecting via terminal.
-
-#### Standalone mode
-
-The **standalone mode** is the easiest to use but also the most limited mode: it's sufficient to select the type of PAL that was previously inserted in the board (**TURN THE POWER OFF FIRST!**) and the board will perform the correct analisys for the selected type of chip. The drawback is that only purely combinatorial PAL devices are supported.
-
-Once the analisys start, a truth table in a format compatible with **espresso** will be printed out.
-
-This table can be used to get minimized equations. You can refer to the documentation in the **DuPAL Analyzer** repository for further details on minimization and feedback outputs.
-
-##### Feeding the truth table to espresso
-
-To capture the truth table that the DuPAL generates, we need to record the output coming from the serial port:
-
-```shell
-$ microcom -s 57600 -p /dev/ttyUSB0 | tee ~/output.tbl
-connected to /dev/ttyUSB0
-Escape character: Ctrl-\
-Type the escape character to get to the prompt.
-
-DuPAL - 0.0.8
-
-Select which PAL type to analyze:
----------------------------------
-a) PAL16L8/PAL10L8
-b) PAL12L6
-x) Remote control
-Press the corresponding letter to start analisys.
-
--[ PAL12L6 analyzer ]-
-
-----CUT_HERE----
-.i 12
-.o 6
-.ilb i1 i2 i3 i4 i5 i6 i7 i8 i9 i11 i12 i19
-.ob o18 o17 o16 o15 o14 o13
-.phase 000000
-000000000000 000000
-100000000000 000100
-010000000000 000000
-...
-101111111111 110000
-011111111111 100010
-111111111111 111111
-.e
-----CUT_HERE----
-Analisys complete.
-```
-
-We can then copy all the text between the two `----CUT_HERE----` headers and feed it to espresso to obtain our equations:
-
-```shell
-espresso -Dexact -oeqntott ~/output_clean.tbl
-```
-
-##### Supported PALs in standalone mode
-
-###### PAL10L8
-
-The **PAL10L8** has:
-
-- 10 input pins (1-9, 11)
-- 8 output pins (12-19)
-
-This device has no tri-state outputs and no registered outputs. Bruteforcing is a simple matter of trying all the combinations.
-The analisys logic is a subset of the **PAL16L8** below.
-
-###### PAL16L8
-
-The **PAL16L8** has:
-
-- 10 input pins (1-9, 11)
-- 2 tri-state outputs (12, 19)
-- 6 selectable Input / Output pins (13-18)
-
-Having no registered outputs means that this device has no memory of previous states, so it can be bruteforced with relative ease.
-
-###### PAL12L6
-
-The **PAL12L6** has:
-
-- 12 input pins (1-9, 11, 12, 19)
-- 6 output pins (13-18)
-
-Having no registered or open collector outputs means that bruteforcing is just a matter of trying all input combinations.
+Newer revisions of the DuPAL support only the remote control mode, and offload all the analisys to the host.
 
 #### Remote Control mode
 

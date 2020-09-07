@@ -9,9 +9,6 @@
 
 #include <util/delay.h>
 
-#include <pal_types/PAL16L8.h>
-#include <pal_types/PAL12L6.h>
-#include <pal_types/PAL20L8.h>
 #include <pal_types/remote_control.h>
 
 #include <ioutils/mcu_io.h>
@@ -24,8 +21,6 @@
 
 #define VERSION "0.1.1"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
-
-static void print_supported_pal(void);
 
 int main(void) {
 #if defined (__AVR_ATmega328P__)
@@ -53,65 +48,24 @@ int main(void) {
 
     uart_puts(SOFT_HEADER); // Print the header
 
-    print_supported_pal();
-
     void (*pal_analyzer)(void) = NULL;
 
     ioutils_setLED(ACT_LED, 0);
 
-    while(1) {
-        if(uart_charavail()) {
-            char sel = uart_getchar();
-        
-            switch(sel) {
-                case 'a':
-                    pal_analyzer = pal16l8_analyze;
-                    break;
-                case 'b':
-                    pal_analyzer = pal12l6_analyze;
-                    break;
-                case 'c':
-                     pal_analyzer = pal20l8_analyze;
-                    break;                   
-                case 'x':
-                    pal_analyzer = remote_control_analyze;
-                    break;
-                default:
-                    uart_puts("Current selection not supported.\n");
-                    pal_analyzer = NULL;
-                    break;
-            }
-
-            if(pal_analyzer) break; // Get out of here!
-        }
-        wdt_reset();
-    }
-
+    pal_analyzer = remote_control_analyze;
     (*pal_analyzer)();
 
-    uart_puts("Analisys complete.\n");
+    uart_puts("DONE.\n");
 
-    // We're done, blink the led at 1Hz
+    // We're done, blink the led at 1Hz and wait for a watchdog reset
     while(1) {
         _delay_ms(1000);
-        wdt_reset(); // Kick the watchdog
         ioutils_setLED(ACT_LED, 0);
         _delay_ms(1000);
-        wdt_reset(); // Kick the watchdog
     }
 
 
     return 0;
-}
-
-static void print_supported_pal(void) {
-    uart_puts("Select which PAL type to analyze:\n");
-    uart_puts("---------------------------------\n");
-    uart_puts("a) PAL16L8/PAL10L8\n");
-    uart_puts("b) PAL12L6\n");
-    uart_puts("c) PAL20L8\n");
-    uart_puts("x) Remote control\n");
-    uart_puts("Press the corresponding letter to start analisys.\n\n");
 }
 
 ISR(INT1_vect) { // Manage INT1

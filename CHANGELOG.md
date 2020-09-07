@@ -2,6 +2,10 @@
 
 ## Unreleased
 
-## 1.0.1 [2020-09-06]
+## 0.1.1 [2020-09-07]
+
+- Removed support for onboard analisys. Will offload everything to the host.
+
+## 0.1.0 [2020-09-06]
 
 - First version made for rev. 2.x DuPAL boards
