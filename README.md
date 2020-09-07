@@ -9,8 +9,7 @@ Most of the PAL ICs in the devices floating around are read-protected: this mean
 The DuPAL (**Du**mper of **PAL**s) is a set of software and hardware instruments that I developed to help me bruteforcing and analyzing these ICs, with the objective of eventually being able to dump and save all the ones in the circuit boards I have around. Wishful thinking maybe, but I'm one step closer now.
 
 **Note:** The current version of the firmware is compatible with rev.2 boards __only__.
-
-**Note 2:** PALs that use outputs feeding their signal back into themselves (thus beckoming an oscillator) are currently not supported.
+**Note 2:** PALs that use I/O pins as output that feedback into themselves are currently not supported.
 
 ### Building
 
