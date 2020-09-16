@@ -31,12 +31,12 @@ void sipo_shifter_set(uint32_t val) {
 
 static inline void toggle_SRCLK(void) {
     SIPO_PORT_1 |= _BV(SIPO_1_CLK); // Set CLK high
-    _delay_us(100);
+    _delay_us(5);
     SIPO_PORT_1 &= ~(_BV(SIPO_1_CLK)); // Set CLK low
 }
 
 static inline void toggle_RCLK(void) {
     SIPO_PORT_2 |= _BV(SIPO_2_RCLK); // Set RCLK high
-    _delay_us(100);
+    _delay_us(5);
     SIPO_PORT_2 &= ~(_BV(SIPO_2_RCLK)); // Set RCLK low
 }

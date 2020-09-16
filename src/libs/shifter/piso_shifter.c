@@ -14,15 +14,15 @@ uint8_t piso_shifter_get(void) {
     uint8_t data = 0;
 
     PISO_PORT &= ~(_BV(PISO_CE) | _BV(PISO_PE) | _BV(PISO_CLK)); // Enable the clock and the inputs, set clock to low
-    _delay_us(50);
+    _delay_us(5);
     PISO_PORT |= _BV(PISO_CLK); // Clock to high
-    _delay_us(50);
+    _delay_us(5);
     PISO_PORT |= _BV(PISO_PE); // Disable the inputs
 
     for(int idx = 0; idx < 8; idx++) {
-        _delay_us(50);
+        _delay_us(5);
         PISO_PORT |= _BV(PISO_CLK); // Clock to high, shift out the data
-        _delay_us(50);
+        _delay_us(5);
         data |= (PIND & _BV(PISO_SER)) ? (1 << idx) : 0;
         PISO_PORT &= ~(_BV(PISO_CLK)); // Clock to low
     }
