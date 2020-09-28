@@ -19,7 +19,7 @@
 #include <shifter/piso_shifter.h>
 
 
-#define VERSION "0.1.1"
+#define VERSION "0.1.2"
 #define SOFT_HEADER "\nDuPAL - " VERSION "\n\n"
 
 int main(void) {
